@@ -55,7 +55,6 @@ services:
       PAPERLESS_DBUSER: 'paperless'
       PAPERLESS_DBNAME: 'paperless'
       PAPERLESS_DBPASS_FILE: '/run/secrets/PAPERLESS_DB_SECRET'
-      PAPERLESS_APPS: 'allauth.socialaccount.providers.openid_connect'
       USERMAP_UID: 1000
       USERMAP_GID: 1000
       PAPERLESS_OCR_LANGUAGES: deu eng chi_tra
@@ -63,7 +62,8 @@ services:
       PAPERLESS_TIME_ZONE: Europe/Berlin
       PAPERLESS_OCR_LANGUAGE: deu
       PAPERLESS_URL: 'https://docs.${domain}'
-      PAPERLESS_OIDC_PROVIDER_FILE: '/run/secrets/PAPERLESS_OIDC_PROVIDER' #>
+      PAPERLESS_APPS: 'allauth.socialaccount.providers.openid_connect'
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS_FILE: '/run/secrets/PAPERLESS_OIDC_PROVIDER' #>
       # {"openid_connect":{"SCOPE":["openid","profile","email"],"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authelia","name":"Authelia","client_id":"paperless","secret":"insecure_password","settings":{"server_url":"https://auth.example.com/.well-known/openid-configuration","token_auth_method":"client_secret_basic"}}]}}
     deploy:
       labels:
