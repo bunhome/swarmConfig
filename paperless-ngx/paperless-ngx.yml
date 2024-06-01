@@ -45,12 +45,18 @@ services:
     secrets:
       - PAPERLESS_DB_SECRET
       - PAPERLESS_SECRET_KEY
+      - PAPERLESS_ADMIN_PASSWORD
+      - PAPERLESS_OIDC_PROVIDER
     environment:
+      PAPERLESS_ADMIN_USER: admin
+      PAPERLESS_ADMIN_PASSWORD_FILE: '/run/secrets/PAPERLESS_ADMIN_PASSWORD' 
       PAPERLESS_REDIS: redis://redis:6379/1
       PAPERLESS_DBHOST: db
       PAPERLESS_DBUSER: 'paperless'
       PAPERLESS_DBNAME: 'paperless'
       PAPERLESS_DBPASS_FILE: '/run/secrets/PAPERLESS_DB_SECRET'
+      PAPERLESS_APPS: 'allauth.socialaccount.providers.openid_connect'
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS_FILE: '/run/secrets/PAPERLESS_OIDC_PROVIDER'
 # The UID and GID of the user used to run paperless in the container. Set this
 # to your UID and GID on the host so that you have write access to the
 # consumption directory.
@@ -74,12 +80,12 @@ services:
 # documents are written in.
       PAPERLESS_OCR_LANGUAGE: deu
 
-      PAPERLESS_URL: 'https://docs.${domain}'
+      PAPERLESS_URL: 'https://documents.${domain}'
     deploy:
       labels:
         - 'traefik.enable=true'
         - 'traefik.http.services.paperless.loadbalancer.server.port=8000'
-        - 'traefik.http.routers.paperless.rule=Host(`docs.${domain}`)'
+        - 'traefik.http.routers.paperless.rule=Host(`documents.${domain}`)'
         - 'traefik.http.routers.paperless.tls=true'
         - 'traefik.http.routers.paperless.tls.certresolver=cloudflare'
         - 'traefik.http.routers.paperless.tls.domains[0].main=${domain}'
@@ -94,6 +100,10 @@ secrets:
   PAPERLESS_DB_SECRET:
     external: true
   PAPERLESS_SECRET_KEY:
+    external: true
+  PAPERLESS_ADMIN_PASSWORD:
+    external: true
+  PAPERLESS_OIDC_PROVIDER:
     external: true
 
 networks:
