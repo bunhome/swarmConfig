@@ -2,7 +2,7 @@
 	"version": 2,
 	"templates": [
         {
-            "type": "2",
+            "type": 2,
             "title": "testpages",
             "description": "adds testpages for internal-only and external-only to test your settings",
             "note": "traefik and overlay must be deployed first",
