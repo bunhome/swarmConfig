@@ -11,7 +11,7 @@
             ],
             "platform": "linux",
             "repository": {
-                "url": "https://github.com/bunhome/swarmConfig",
+                "url": "https://github.com/bunhome/swarmConfig.git",
                 "stackfile": "test/test.yml"
             },
             "env": [
@@ -32,7 +32,7 @@
             ],
             "platform": "linux",
             "repository": {
-                "url": "https://github.com/bunhome/swarmConfig",
+                "url": "https://github.com/bunhome/swarmConfig.git",
                 "stackfile": "paperless-ngx/paperless-ngx.yml"
             },
             "env": [
