@@ -718,7 +718,7 @@ identity_providers:
         require_pkce: true
         pkce_challenge_method: 'S256'
         redirect_uris:
-          - 'https://documents.{{ secret "/run/secrets/DOMAIN_NAME" }}/accounts/authelia/login/callback'
+          - 'https://docs.{{ secret "/run/secrets/DOMAIN_NAME" }}/accounts/oidc/authelia/login/callback/'
         scopes:
           - 'openid'
           - 'profile'
