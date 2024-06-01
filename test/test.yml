@@ -1,0 +1,32 @@
+services: 
+  testpage_external:
+    image: traefik/whoami
+    networks:
+      - overlay_public
+    deploy:
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.testExt.rule=Host(`testpage-external.${domain}`)'
+        - 'traefik.http.routers.testExt.entrypoints=https-external'
+        - 'traefik.http.routers.testExt.tls=true'
+        - 'traefik.http.services.testExt.loadbalancer.server.port=80'
+        - 'traefik.http.routers.testExt.middlewares=authelia@swarm'
+    restart: unless-stopped
+
+  testpage_internal:
+    image: traefik/whoami
+    networks:
+      - overlay_public
+    deploy:
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.testInt.rule=Host(`testpage-internal.${domain}`)'
+        - 'traefik.http.routers.testInt.entrypoints=https'
+        - 'traefik.http.routers.testInt.tls=true'
+        - 'traefik.http.services.testInt.loadbalancer.server.port=80'
+        - 'traefik.http.routers.testInt.middlewares=authelia@swarm'
+    restart: unless-stopped
+
+networks:
+  overlay_public:
+    external: true

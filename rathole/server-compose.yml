@@ -1,0 +1,30 @@
+version: "3"
+services:
+  rathole:
+    container_name: rathole
+    image: rapiz1/rathole:latest
+    networks:
+      - proxy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2333:2333"
+    restart: unless-stopped
+    entrypoint: "./rathole /app/config.toml"
+    configs:
+      - source: rathole_config_toml
+        target: /app/config.toml
+    secrets:
+      - RATHOLE_DEFAULT_TOKEN
+
+networks:
+  proxy:
+    external: true
+
+configs:
+  rathole_config_toml:
+    external: true
+
+secrets:
+  RATHOLE_DEFAULT_TOKEN:
+    external: true

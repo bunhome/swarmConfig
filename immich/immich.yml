@@ -1,0 +1,85 @@
+version: "3.9"
+
+services:
+  immich-server:
+    image: ghcr.io/immich-app/immich-server:release
+    command: 
+      - 'start.sh' 
+      - 'immich'
+    volumes:
+      - /home/denis/media/pictures:/usr/src/app/upload
+    environment:
+      - 'TZ=Europe/Berlin'
+      - 'LOG_LEVEL=verbose'
+      - 'DB_USERNAME=postgres'
+      - 'DB_PASSWORD=postgres'
+      - 'DB_DATABASE_NAME=immich'
+    ports:
+      - 2283:3001
+    networks:
+      - overlay_public
+      - immich_private
+    deploy:
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.services.immich.loadbalancer.server.port=3001'
+        - 'traefik.http.routers.immich.rule=Host(`photos.${domain}`)'
+        - 'traefik.http.routers.immich.tls=true'
+        - 'traefik.http.routers.immich.tls.certresolver=cloudflare'
+        - 'traefik.http.routers.immich.tls.domains[0].main=${domain}'
+        - 'traefik.http.routers.immich.tls.domains[0].sans=*.${domain}'
+        - 'traefik.http.routers.immich.entrypoints=https,https-external'
+
+  immich-microservices:
+    image: ghcr.io/immich-app/immich-server:release
+    command: ['start.sh', 'microservices']
+    volumes:
+      - /home/denis/media/pictures:/usr/src/app/upload
+    environment:
+      - 'TZ=Europe/Berlin'
+      - 'LOG_LEVEL=verbose'
+      - 'DB_USERNAME=postgres'
+      - 'DB_PASSWORD=postgres'
+      - 'DB_DATABASE_NAME=immich'
+    networks:
+      - immich_private
+
+  immich-machine-learning:
+    image: ghcr.io/immich-app/immich-machine-learning:release
+    volumes:
+      - model-cache:/cache
+    environment:
+      - 'TZ=Europe/Berlin'
+    networks:
+      - immich_private
+
+  redis:
+    image: registry.hub.docker.com/library/redis:6.2-alpine@sha256:84882e87b54734154586e5f8abd4dce69fe7311315e2fc6d67c29614c8de2672
+    networks:
+      - immich_private
+
+  database:
+    image: registry.hub.docker.com/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:90724186f0a3517cf6914295b5ab410db9ce23190a2d9d0b9dd6463e3fa298f0
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: immich
+      POSTGRES_INITDB_ARGS: '--data-checksums'
+    volumes:
+      - /var/data/immich/database:/var/lib/postgresql/data
+    networks:
+      - immich_private
+    command: ["postgres", "-c" ,"shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
+
+
+networks:
+  overlay_public:
+    external: true
+  immich_private:
+    driver: overlay
+    ipam:
+      config:
+        - subnet: 172.16.8.0/24
+
+volumes:
+  model-cache:

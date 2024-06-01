@@ -1,0 +1,103 @@
+version: '3.3'
+
+services:
+
+  traefik:
+    # Use the latest v3.0.x Traefik image available
+    image: traefik:v3.0
+    ports:
+      # Listen on port 80, default for HTTP, necessary to redirect to HTTPS
+      - 80:80
+      # Listen on port 443, default for HTTPS
+      - 443:443
+    command:
+      # Enable Docker Swarm mode
+      - --providers.swarm.endpoint=unix:///var/run/docker.sock
+      - --providers.swarm.exposedbydefault=false
+      - --providers.swarm.network=overlay_public
+
+      # Create an entrypoint "http" listening on port 80
+      - --entrypoints.http.address=:80
+      - --entryPoints.http.http.redirections.entryPoint.to=https
+      - --entryPoints.http.http.redirections.entryPoint.scheme=https
+
+      # Create an entrypoint "https" listening on port 443
+      - --entrypoints.https.address=:443
+
+      # Create an entrypoint "http-external" listening on port 80
+      - --entrypoints.http-external.address=:800
+      - --entryPoints.http-external.http.redirections.entryPoint.to=https-external
+      - --entryPoints.http-external.http.redirections.entryPoint.scheme=https
+
+      # Create an entrypoint "https-external" listening on port 443
+      - --entrypoints.https-external.address=:4430
+      #- --entrypoints.https-external.middlewares=authelia@swarm
+      
+      # Create the certificate resolver
+      - --certificatesresolvers.cloudflare.acme.email=denmaier@gmail.com
+      - --certificatesresolvers.cloudflare.acme.storage=/certificates/acme.json
+      - --certificatesresolvers.cloudflare.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.cloudflare.acme.dnsChallenge.provider=cloudflare
+      - --certificatesresolvers.cloudflare.acme.dnsChallenge.resolvers=1.1.1.1:53
+      
+      # Enable the access log, with HTTP requests
+      - --accesslog
+      # Enable the Traefik log, for configurations and errors
+      - --log
+      # Enable the Dashboard and API
+      - --api
+    deploy:
+      labels:
+        # Enable Traefik for this service, to make it available in the public network
+        - "traefik.enable=true"
+        # request custom header
+        - "traefik.http.routers.api.rule=Host(`traefik.${domain}`)"
+        - "traefik.http.routers.api.entrypoints=https"
+        - "traefik.http.routers.api.tls=true"
+        # Use the special Traefik service api@internal with the web UI/Dashboard
+        - "traefik.http.routers.api.service=api@internal"
+        # Use the "cloudflare" (DNS) resolver created below
+        - "traefik.http.routers.api.tls.certresolver=cloudflare"
+        - "traefik.http.routers.api.tls.domains[0].main=${domain}"
+        - "traefik.http.routers.api.tls.domains[0].sans=*.${domain}"
+        # Enable HTTP Basic auth, using the middleware created above
+        - "traefik.http.routers.api.middlewares=authelia@swarm"
+        # Define the port inside of the Docker service to use
+        - "traefik.http.services.api.loadbalancer.server.port=8080"
+      placement:
+        constraints:
+          # Make the traefik service run only on the node with this label
+          # as the node with it has the volume for the certificates
+          #- node.labels.overlay_public.overlay_public-certificates == true
+          - node.role == manager
+    secrets:
+      - CF_DNS_API_TOKEN
+    environment:
+      CF_DNS_API_TOKEN_FILE: '/run/secrets/CF_DNS_API_TOKEN'
+      TZ: Europe/Berlin
+    volumes:
+      # Add Docker as a mounted volume, so that Traefik can read the labels of other services
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Mount the volume to store the certificates
+      - overlay_public-certificates:/certificates
+    networks:
+      # Use the public network created to be shared between Traefik and
+      # any other service that needs to be publicly available with HTTPS
+      - overlay_public
+
+
+volumes:
+  # Create a volume to store the certificates, there is a constraint to make sure
+  # Traefik is always deployed to the same Docker node with the same volume containing
+  # the HTTPS certificates
+  overlay_public-certificates:
+
+networks:
+  # Use the previously created public network "overlay_public", shared with other
+  # services that need to be publicly available via this Traefik
+  overlay_public:
+    external: true
+
+secrets:
+  CF_DNS_API_TOKEN:
+    external: true

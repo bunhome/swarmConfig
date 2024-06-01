@@ -1,0 +1,15 @@
+[client]
+remote_addr = "{{ secret "RATHOLE_ADDRESS" }}:{{ secret "RATHOLE_CONNECTION_PORT" }}"
+default_token = "{{ secret "RATHOLE_DEFAULT_TOKEN" }}"
+heartbeat_timeout = 40
+retry_interval = 1
+
+[client.services.http]
+type = "tcp"
+local_addr = "traefik_traefik:800"
+
+[client.services.https]
+type = "tcp"
+local_addr = "traefik_traefik:4430"
+
+

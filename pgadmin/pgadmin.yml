@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: denmaier@gmail.com
+      PGADMIN_DEFAULT_PASSWORD_FILE: '/run/secrets/PGADMIN_DEFAULT_PASSWORD'
+    secrets:
+      - PGADMIN_DEFAULT_PASSWORD
+    volumes:
+      - 'pgadmin-data:/var/lib/pgadmin'
+    networks:
+      - overlay_public
+    deploy:
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.pgadmin.entrypoints=https'
+        - 'traefik.http.routers.pgadmin.rule=Host(`pgadmin.${domain}`)'
+        - 'traefik.http.routers.pgadmin.tls=true'
+        - 'traefik.http.services.pgadmin.loadbalancer.server.port=80'
+
+secrets:
+  PGADMIN_DEFAULT_PASSWORD:
+    external: true
+
+networks:
+  overlay_public:
+    external: true
+
+volumes:
+  pgadmin-data:

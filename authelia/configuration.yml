@@ -1,0 +1,753 @@
+###############################################################################
+##                           Authelia Configuration                          ##
+###############################################################################
+
+##
+## Notes:
+##
+##    - the default location of this file is assumed to be configuration.yml unless otherwise noted
+##    - when using docker the container expects this by default to be at /config/configuration.yml
+##    - the default location where this file is loaded from can be overridden with the X_AUTHELIA_CONFIG environment var
+##    - the comments in this configuration file are helpful but users should consult the official documentation on the
+##      website at https://www.authelia.com/ or https://www.authelia.com/configuration/prologue/introduction/
+##    - this configuration file template is not automatically updated
+##
+
+## The theme to display: light, dark, grey, auto.
+theme: 'auto'
+
+## Set the default 2FA method for new users and for when a user has a preferred method configured that has been
+## disabled. This setting must be a method that is enabled.
+##Options are totp, webauthn, mobile_push.
+default_2fa_method: 'totp'
+
+server:
+  address: 'tcp://:9091'
+
+##
+## Log Configuration
+##
+log:
+  ## Level of verbosity for logs: info, debug, trace.
+  level: 'info'
+
+  ## Format the logs are written as: json, text.
+  # format: 'json'
+
+  ## File path where the logs will be written. If not set logs are written to stdout.
+  file_path: '/runTime/authelia.log'
+
+  ## Whether to also log to stdout when a log_file_path is defined.
+  # keep_stdout: false
+
+##
+## TOTP Configuration
+##
+## Parameters used for TOTP generation.
+totp:
+  ## Disable TOTP.
+  disable: false
+
+  ## The issuer name displayed in the Authenticator application of your choice.
+  issuer: '{{ secret "/run/secrets/DOMAIN_NAME" }}'
+
+  ## The TOTP algorithm to use.
+  ## It is CRITICAL you read the documentation before changing this option:
+  ## https://www.authelia.com/c/totp#algorithm
+  # algorithm: 'SHA1'
+
+  ## The number of digits a user has to input. Must either be 6 or 8.
+  ## Changing this option only affects newly generated TOTP configurations.
+  ## It is CRITICAL you read the documentation before changing this option:
+  ## https://www.authelia.com/c/totp#digits
+  # digits: 6
+
+  ## The period in seconds a Time-based One-Time Password is valid for.
+  ## Changing this option only affects newly generated TOTP configurations.
+  # period: 30
+
+  ## The skew controls number of Time-based One-Time Passwords either side of the current one that are valid.
+  ## Warning: before changing skew read the docs link below.
+  # skew: 1
+  ## See: https://www.authelia.com/c/totp#input-validation to read
+  ## the documentation.
+
+  ## The size of the generated shared secrets. Default is 32 and is sufficient in most use cases, minimum is 20.
+  # secret_size: 32
+
+  ## The allowed algorithms for a user to pick from.
+  # allowed_algorithms:
+  # - 'SHA1'
+
+  ## The allowed digits for a user to pick from.
+  # allowed_digits:
+  # - 6
+
+  ## The allowed periods for a user to pick from.
+  # allowed_periods:
+  # - 30
+
+  ## Disable the reuse security policy which prevents replays of one-time password code values.
+  # disable_reuse_security_policy: false
+
+##
+## WebAuthn Configuration
+##
+## Parameters used for WebAuthn.
+webauthn:
+  ## Disable WebAuthn.
+  disable: true
+
+#identity_validation:
+
+  ## Reset Password flow. Adjusts how the reset password flow operates.
+  #äreset_password:
+    ## Maximum allowed time before the JWT is generated and when the user uses it in the duration common syntax.
+    # jwt_lifespan: '20 minutes'
+
+    ## The algorithm used for the Reset Password JWT.
+    # jwt_algorithm: 'HS256'
+
+    ## The secret key used to sign and verify the JWT.
+    #jwt_secret: AUTHELIA_JWT_SECRET_FILE
+
+  ## Elevated Session flows. Adjusts the flow which require elevated sessions for example managing credentials, adding,
+  ## removing, etc.
+  # elevated_session:
+    ## Maximum allowed lifetime after the One-Time Code is generated that it is considered valid.
+    # code_lifespan: '5 minutes'
+
+    ## Maximum allowed lifetime after the user uses the One-Time Code and the user must perform the validation again in
+    ## the duration common syntax.
+    # elevation_lifespan: '10 minutes'
+
+    ## Number of characters the one-time password contains.
+    # characters: 8
+
+    ## In addition to the One-Time Code requires the user performs a second factor authentication.
+    # require_second_factor: false
+
+    ## Skips the elevation requirement and entry of the One-Time Code if the user has performed second factor
+    ## authentication.
+    # skip_second_factor: false
+
+##
+## NTP Configuration
+##
+## This is used to validate the servers time is accurate enough to validate TOTP.
+# ntp:
+  ## The address of the NTP server to connect to in the address common syntax.
+  ## Format: [<scheme>://]<hostname>[:<port>].
+  ## Square brackets indicate optional portions of the format. Scheme must be 'udp', 'udp4', or 'udp6'.
+  ## The default scheme is 'udp'. The default port is '123'.
+  # address: 'udp://time.cloudflare.com:123'
+
+  ## NTP version.
+  # version: 4
+
+  ## Maximum allowed time offset between the host and the NTP server in the duration common syntax.
+  # max_desync: '3 seconds'
+
+  ## Disables the NTP check on startup entirely. This means Authelia will not contact a remote service at all if you
+  ## set this to true, and can operate in a truly offline mode.
+  # disable_startup_check: false
+
+  ## The default of false will prevent startup only if we can contact the NTP server and the time is out of sync with
+  ## the NTP server more than the configured max_desync. If you set this to true, an error will be logged but startup
+  ## will continue regardless of results.
+  # disable_failure: false
+
+##
+## Authentication Backend Provider Configuration
+##
+## Used for verifying user passwords and retrieve information such as email address and groups users belong to.
+##
+## The available providers are: `file`, `ldap`. You must use only one of these providers.
+authentication_backend:
+
+  ## Password Reset Options.
+  password_reset:
+    ## Disable both the HTML element and the API for reset password functionality.
+    disable: false
+
+    ## External reset password url that redirects the user to an external reset portal. This disables the internal reset
+    ## functionality.
+    # custom_url: ''
+
+  ## The amount of time to wait before we refresh data from the authentication backend in the duration common syntax.
+  ## To disable this feature set it to 'disable', this will slightly reduce security because for Authelia, users will
+  ## always belong to groups they belonged to at the time of login even if they have been removed from them in LDAP.
+  ## To force update on every request you can set this to '0' or 'always', this will increase processor demand.
+  ## See the below documentation for more information.
+  ## Refresh Interval docs: https://www.authelia.com/c/1fa#refresh-interval
+  # refresh_interval: '5 minutes'
+
+  ##
+  ## LDAP (Authentication Provider)
+  ##
+  ## This is the recommended Authentication Provider in production
+  ## because it allows Authelia to offload the stateful operations
+  ## onto the LDAP service.
+  #ldap:
+    ## The address of the directory server to connect to in the address common syntax.
+    ## Format: [<scheme>://]<hostname>[:<port>].
+    ## Square brackets indicate optional portions of the format. Scheme must be 'ldap', 'ldaps', or 'ldapi`.
+    ## The default scheme is 'ldapi' if the address is an absolute path otherwise it's 'ldaps'.
+    ## The default port is '636', unless the scheme is 'ldap' in which case it's '389'.
+    #address: 'ldap://ldap:389'
+
+    ## The LDAP implementation, this affects elements like the attribute utilised for resetting a password.
+    ## Acceptable options are as follows:
+    ## - 'activedirectory' - for Microsoft Active Directory.
+    ## - 'freeipa' - for FreeIPA.
+    ## - 'lldap' - for lldap.
+    ## - 'custom' - for custom specifications of attributes and filters.
+    ## This currently defaults to 'custom' to maintain existing behaviour.
+    ##
+    ## Depending on the option here certain other values in this section have a default value, notably all of the
+    ## attribute mappings have a default value that this config overrides, you can read more about these default values
+    ## at https://www.authelia.com/c/ldap#defaults
+    # implementation: 'custom'
+
+    ## The dial timeout for LDAP in the duration common syntax.
+    # timeout: '5 seconds'
+
+    ## Use StartTLS with the LDAP connection.
+    # start_tls: false
+
+    # tls:
+      ## The server subject name to check the servers certificate against during the validation process.
+      ## This option is not required if the certificate has a SAN which matches the address options hostname.
+      # server_name: 'ldap.example.com'
+
+      ## Skip verifying the server certificate entirely. In preference to setting this we strongly recommend you add the
+      ## certificate or the certificate of the authority signing the certificate to the certificates directory which is
+      ## defined by the `certificates_directory` option at the top of the configuration.
+      ## It's important to note the public key should be added to the directory, not the private key.
+      ## This option is strongly discouraged but may be useful in some self-signed situations where validation is not
+      ## important to the administrator.
+      # skip_verify: false
+
+      ## Minimum TLS version for the connection.
+      # minimum_version: 'TLS1.2'
+
+      ## Maximum TLS version for the connection.
+      # maximum_version: 'TLS1.3'
+
+      ## The certificate chain used with the private_key if the server requests TLS Client Authentication
+      ## i.e. Mutual TLS.
+      # certificate_chain: |
+        # -----BEGIN CERTIFICATE-----
+        # ...
+        # -----END CERTIFICATE-----
+        # -----BEGIN CERTIFICATE-----
+        # ...
+        # -----END CERTIFICATE-----
+
+      ## The private key used with the certificate_chain if the server requests TLS Client Authentication
+      ## i.e. Mutual TLS.
+      # private_key: |
+        # -----BEGIN RSA PRIVATE KEY-----
+        # ...
+        # -----END RSA PRIVATE KEY-----
+
+    ## The distinguished name of the container searched for objects in the directory information tree.
+    ## See also: additional_users_dn, additional_groups_dn.
+    #base_dn: 'dc=dmaier,dc=top'
+
+    ## The additional_users_dn is prefixed to base_dn and delimited by a comma when searching for users.
+    ## i.e. with this set to OU=Users and base_dn set to DC=a,DC=com; OU=Users,DC=a,DC=com is searched for users.
+    #additional_users_dn: 'ou=users'
+
+    ## The users filter used in search queries to find the user profile based on input filled in login form.
+    ## Various placeholders are available in the user filter which you can read about in the documentation which can
+    ## be found at: https://www.authelia.com/c/ldap#users-filter-replacements
+    ##
+    ## Recommended settings are as follows:
+    ## - Microsoft Active Directory: (&({username_attribute}={input})(objectCategory=person)(objectClass=user))
+    ## - OpenLDAP:
+    ##   - (&({username_attribute}={input})(objectClass=person))
+    ##   - (&({username_attribute}={input})(objectClass=inetOrgPerson))
+    ##
+    ## To allow sign in both with username and email, one can use a filter like
+    ## (&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))
+    #users_filter: 
+    #  - (&({username_attribute}={input})(objectClass=person))
+    #  - (&({username_attribute}={input})(objectClass=inetOrgPerson))
+
+    ## The additional_groups_dn is prefixed to base_dn and delimited by a comma when searching for groups.
+    ## i.e. with this set to OU=Groups and base_dn set to DC=a,DC=com; OU=Groups,DC=a,DC=com is searched for groups.
+    # additional_groups_dn: 'ou=groups'
+
+    ## The groups filter used in search queries to find the groups based on relevant authenticated user.
+    ## Various placeholders are available in the groups filter which you can read about in the documentation which can
+    ## be found at: https://www.authelia.com/c/ldap#groups-filter-replacements
+    ##
+    ## If your groups use the `groupOfUniqueNames` structure use this instead:
+    ##    (&(uniqueMember={dn})(objectClass=groupOfUniqueNames))
+    #groups_filter: '(&(member={dn})(objectClass=groupOfNames))'
+
+    ## The group search mode to use. Options are 'filter' or 'memberof'. It's essential to read the docs if you wish to
+    ## use 'memberof'. Also 'filter' is the best choice for most use cases.
+    # group_search_mode: 'filter'
+
+    ## Follow referrals returned by the server.
+    ## This is especially useful for environments where read-only servers exist. Only implemented for write operations.
+    # permit_referrals: false
+
+    ## The username and password of the admin user.
+    #user: 'cn=admin,dc=dmaier,dc=top'
+    ## Password can also be set using a secret: https://www.authelia.com/c/secrets
+    # password: 'password'
+
+    ## The attributes for users and objects from the directory server.
+    #attributes:
+
+      ## The distinguished name attribute if your directory server supports it. Users should read the docs before
+      ## configuring. Only used for the 'memberof' group search mode.
+      # distinguished_name: ''
+
+      ## The attribute holding the username of the user. This attribute is used to populate the username in the session
+      ## information. For your information, Microsoft Active Directory usually uses 'sAMAccountName' and OpenLDAP
+      ## usually uses 'uid'. Beware that this attribute holds the unique identifiers for the users binding the user and
+      ## the configuration stored in database; therefore only single value attributes are allowed and the value must
+      ## never be changed once attributed to a user otherwise it would break the configuration for that user.
+      ## Technically non-unique attributes like 'mail' can also be used but we don't recommend using them, we instead
+      ## advise to use a filter to perform alternative lookups and the attributes mentioned above
+      ## (sAMAccountName and uid) to follow https://datatracker.ietf.org/doc/html/rfc2307.
+      #username: 'uid'
+
+      ## The attribute holding the display name of the user. This will be used to greet an authenticated user.
+      #display_name: 'displayName'
+
+      ## The attribute holding the mail address of the user. If multiple email addresses are defined for a user, only
+      ## the first one returned by the directory server is used.
+      #mail: 'mail'
+
+      ## The attribute which provides distinguished names of groups an object is a member of.
+      ## Only used for the 'memberof' group search mode.
+      # member_of: 'memberOf'
+
+      ## The attribute holding the name of the group.
+      #group_name: 'cn'
+
+  ##
+  ## File (Authentication Provider)
+  ##
+  ## With this backend, the users database is stored in a file which is updated when users reset their passwords.
+  ## Therefore, this backend is meant to be used in a dev environment and not in production since it prevents Authelia
+  ## to be scaled to more than one instance. The options under 'password' have sane defaults, and as it has security
+  ## implications it is highly recommended you leave the default values. Before considering changing these settings
+  ## please read the docs page below:
+  ## https://www.authelia.com/r/passwords#tuning
+  ##
+  ## Important: Kubernetes (or HA) users must read https://www.authelia.com/t/statelessness
+  ##
+  file:
+    path: '/runTime/users_database.yml'
+    watch: true
+    # search:
+      # email: false
+      # case_insensitive: false
+    # password:
+      # algorithm: 'argon2'
+      # argon2:
+        # variant: 'argon2id'
+        # iterations: 3
+        # memory: 65536
+        # parallelism: 4
+        # key_length: 32
+        # salt_length: 16
+      # scrypt:
+        # iterations: 16
+        # block_size: 8
+        # parallelism: 1
+        # key_length: 32
+        # salt_length: 16
+      # pbkdf2:
+        # variant: 'sha512'
+        # iterations: 310000
+        # salt_length: 16
+      # sha2crypt:
+        # variant: 'sha512'
+        # iterations: 50000
+        # salt_length: 16
+      # bcrypt:
+        # variant: 'standard'
+        # cost: 12
+
+##
+## Password Policy Configuration.
+##
+password_policy:
+
+  ## The standard policy allows you to tune individual settings manually.
+  standard:
+    enabled: false
+
+  ## zxcvbn is a well known and used password strength algorithm. It does not have tunable settings.
+  zxcvbn:
+    enabled: true
+
+    ## Configures the minimum score allowed.
+    min_score: 3
+
+access_control:
+  ## Default policy can either be 'bypass', 'one_factor', 'two_factor' or 'deny'. It is the policy applied to any
+  ## resource if there is no policy to be applied to the user.
+  default_policy: 'deny'
+
+  rules:
+    - domain: '*.{{ secret "/run/secrets/DOMAIN_NAME" }}'
+      policy: 'two_factor'
+
+  # networks:
+    # - name: 'internal'
+    #   networks:
+        # - '10.10.0.0/16'
+        # - '192.168.2.0/24'
+    # - name: 'VPN'
+    #   networks: '10.9.0.0/16'
+
+  # rules:
+    ## Rules applied to everyone
+    # - domain: 'public.example.com'
+    #   policy: 'bypass'
+
+    ## Domain Regex examples. Generally we recommend just using a standard domain.
+    # - domain_regex: '^(?P<User>\w+)\.example\.com$'
+    #   policy: 'one_factor'
+    # - domain_regex: '^(?P<Group>\w+)\.example\.com$'
+    #   policy: 'one_factor'
+    # - domain_regex:
+      #  - '^appgroup-.*\.example\.com$'
+      #  - '^appgroup2-.*\.example\.com$'
+    #   policy: 'one_factor'
+    # - domain_regex: '^.*\.example\.com$'
+    #   policy: 'two_factor'
+
+    # - domain: 'secure.example.com'
+    #   policy: 'one_factor'
+    ## Network based rule, if not provided any network matches.
+    #   networks:
+        # - 'internal'
+        # - 'VPN'
+        # - '192.168.1.0/24'
+        # - '10.0.0.1'
+
+    # - domain:
+        # - 'secure.example.com'
+        # - 'private.example.com'
+    #   policy: 'two_factor'
+
+    # - domain: 'singlefactor.example.com'
+    #   policy: 'one_factor'
+
+    ## Rules applied to 'admins' group
+    # - domain: 'mx2.mail.example.com'
+    #   subject: 'group:admins'
+    #   policy: 'deny'
+
+    # - domain: '*.example.com'
+    #   subject:
+        # - 'group:admins'
+        # - 'group:moderators'
+    #   policy: 'two_factor'
+
+    ## Rules applied to 'dev' group
+    # - domain: 'dev.example.com'
+    #   resources:
+        # - '^/groups/dev/.*$'
+    #   subject: 'group:dev'
+    #   policy: 'two_factor'
+
+    ## Rules applied to user 'john'
+    # - domain: 'dev.example.com'
+    #   resources:
+        # - '^/users/john/.*$'
+    #   subject: 'user:john'
+    #   policy: 'two_factor'
+
+    ## Rules applied to user 'harry'
+    # - domain: 'dev.example.com'
+    #   resources:
+        # - '^/users/harry/.*$'
+    #   subject: 'user:harry'
+    #   policy: 'two_factor'
+
+    ## Rules applied to user 'bob'
+    # - domain: '*.mail.example.com'
+    #   subject: 'user:bob'
+    #   policy: 'two_factor'
+    # - domain: 'dev.example.com'
+    #   resources:
+    #     - '^/users/bob/.*$'
+    #   subject: 'user:bob'
+    #   policy: 'two_factor'
+
+##
+## Session Provider Configuration
+##
+## The session cookies identify the user once logged in.
+## The available providers are: `memory`, `redis`. Memory is the provider unless redis is defined.
+session:
+  ## The secret to encrypt the session data. This is only used with Redis / Redis Sentinel.
+  ## Secret can also be set using a secret: https://www.authelia.com/c/secrets
+  #secret: AUTHELIA_SESSION_SECRET_FILE
+
+  ## Cookies configures the list of allowed cookie domains for sessions to be created on.
+  ## Undefined values will default to the values below.
+  cookies:
+    - name: 'authelia_session'
+      domain: '{{ secret "/run/secrets/DOMAIN_NAME" }}'  # Should match whatever your root protected domain is
+      authelia_url: 'https://auth.{{ secret "/run/secrets/DOMAIN_NAME" }}'
+      expiration: '1 hour'
+      inactivity: '5 minutes'
+  ##
+  ## Redis Provider
+  ##
+  ## Important: Kubernetes (or HA) users must read https://www.authelia.com/t/statelessness
+  ##
+  redis:
+    host: 'redis'
+    port: 6379
+    ## Use a unix socket instead
+    # host: '/var/run/redis/redis.sock'
+
+##
+## Regulation Configuration
+##
+## This mechanism prevents attackers from brute forcing the first factor. It bans the user if too many attempts are made
+## in a short period of time.
+regulation:
+  ## The number of failed login attempts before user is banned. Set it to 0 to disable regulation.
+  max_retries: 3
+
+  ## The time range during which the user can attempt login before being banned in the duration common syntax. The user
+  ## is banned if the authentication failed 'max_retries' times in a 'find_time' seconds window.
+  find_time: '2 minutes'
+
+  ## The length of time before a banned user can login again in the duration common syntax.
+  ban_time: '5 minutes'
+
+##
+## Storage Provider Configuration
+##
+## The available providers are: `local`, `mysql`, `postgres`. You must use one and only one of these providers.
+storage:
+  ## The encryption key that is used to encrypt sensitive information in the database. Must be a string with a minimum
+  ## length of 20. Please see the docs if you configure this with an undesirable key and need to change it, you MUST use
+  ## the CLI to change this in the database if you want to change it from a previously configured value.
+  # encryption_key: AUTHELIA_STORAGE_ENCRYPTION_KEY
+
+  postgres:
+    address: 'tcp://db:5432'
+    database: 'authelia'
+    schema: 'public'
+    username: 'authelia'
+    password: 
+
+##
+## Notification Provider
+##
+## Notifications are sent to users when they require a password reset, a WebAuthn registration or a TOTP registration.
+## The available providers are: filesystem, smtp. You must use only one of these providers.
+notifier:
+  ## You can disable the notifier startup check by setting this to true.
+  disable_startup_check: false
+  smtp:
+    username: 'denmaier@gmail.com'
+    # This secret can also be set using the env variables AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE
+    #password: AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE
+    sender: 'admin@{{ secret "/run/secrets/DOMAIN_NAME" }}'
+    address: 'submission://smtp.gmail.com:587'
+
+##
+## Identity Providers
+##
+identity_providers:
+
+  ##
+  ## OpenID Connect (Identity Provider)
+  ##
+  ## It's recommended you read the documentation before configuration of this section:
+  ## https://www.authelia.com/c/oidc
+  oidc:
+    ## The hmac_secret is used to sign OAuth2 tokens (authorization code, access tokens and refresh tokens).
+    ## HMAC Secret can also be set using a secret: https://www.authelia.com/c/secrets
+    # hmac_secret: 'this_is_a_secret_abc123abc123abc'
+
+    ## The JWK's issuer option configures multiple JSON Web Keys. It's required that at least one of the JWK's
+    ## configured has the RS256 algorithm. For RSA keys (RS or PS) the minimum is a 2048 bit key.
+    jwks:
+      - key_id: 'example'
+
+      ## The key algorithm used with this key.
+      #algorithm: 'RS256'
+
+      ## The key use expected with this key. Currently only 'sig' is supported.
+      # use: 'sig'
+
+      ## Required Private Key in PEM DER form.
+        key: {{ secret "/run/secrets/AUTHELIA_OIDC_JWKS_KEY" | mindent 10 "|" | msquote }}
+
+
+      ## Optional matching certificate chain in PEM DER form that matches the key. All certificates within the chain
+      ## must be valid and current, and from top to bottom each certificate must be signed by the subsequent one.
+      # certificate_chain: |
+        # -----BEGIN CERTIFICATE-----
+        # ...
+        # -----END CERTIFICATE-----
+        # -----BEGIN CERTIFICATE-----
+        # ...
+        # -----END CERTIFICATE-----
+
+    ## Enables additional debug messages.
+    # enable_client_debug_messages: false
+
+    ## SECURITY NOTICE: It's not recommended changing this option and values below 8 are strongly discouraged.
+    # minimum_parameter_entropy: 8
+
+    ## SECURITY NOTICE: It's not recommended changing this option, and highly discouraged to have it set to 'never'
+    ## for security reasons.
+    # enforce_pkce: 'public_clients_only'
+
+    ## SECURITY NOTICE: It's not recommended changing this option. We encourage you to read the documentation and fully
+    ## understanding it before enabling this option.
+    # enable_jwt_access_token_stateless_introspection: false
+
+    ## The signing algorithm used for signing the discovery and metadata responses. An issuer JWK with a matching
+    ## algorithm must be available when configured. Most clients completely ignore this and it has a performance cost.
+    # discovery_signed_response_alg: 'none'
+
+    ## The signing key id used for signing the discovery and metadata responses. An issuer JWK with a matching key id
+    ## must be available when configured. Most clients completely ignore this and it has a performance cost.
+    # discovery_signed_response_key_id: ''
+
+    ## Authorization Policies which can be utilized by clients. The 'policy_name' is an arbitrary value that you pick
+    ## which is utilized as the value for the 'authorization_policy' on the client.
+    authorization_policies:
+      standard:
+        default_policy: 'two_factor'
+        rules:
+         - policy: 'deny'
+           subject: 'group:services'
+
+    ## The lifespans configure the expiration for these token types in the duration common syntax. In addition to this
+    ## syntax the lifespans can be customized per-client.
+    # lifespans:
+      ## Configures the default/fallback lifespan for given token types. This behaviour applies to all clients and all
+      ## grant types but you can override this behaviour using the custom lifespans.
+      # access_token: '1 hour'
+      # authorize_code: '1 minute'
+      # id_token: '1 hour'
+      # refresh_token: '90 minutes'
+
+    ## Cross-Origin Resource Sharing (CORS) settings.
+    # cors:
+      ## List of endpoints in addition to the metadata endpoints to permit cross-origin requests on.
+      # endpoints:
+        #  - 'authorization'
+        #  - 'pushed-authorization-request'
+        #  - 'token'
+        #  - 'revocation'
+        #  - 'introspection'
+        #  - 'userinfo'
+
+      ## List of allowed origins.
+      ## Any origin with https is permitted unless this option is configured or the
+      ## allowed_origins_from_client_redirect_uris option is enabled.
+      # allowed_origins:
+        # - 'https://example.com'
+
+      ## Automatically adds the origin portion of all redirect URI's on all clients to the list of allowed_origins,
+      ## provided they have the scheme http or https and do not have the hostname of localhost.
+      # allowed_origins_from_client_redirect_uris: false
+
+    clients:
+      - client_id: 'immich'
+        client_name: 'immich'
+        client_secret: '$argon2id$v=19$m=65536,t=3,p=4$bKhMc13uFFFv+06N+V8O+A$p7AfHTaPcrIC0nhgAYNw4yyflVuBHNmW+T+Q3T222ho'  # The digest of 'insecure_secret'.
+        public: false
+        authorization_policy: 'two_factor'
+        redirect_uris:
+          - 'https://photos.{{ secret "/run/secrets/DOMAIN_NAME" }}/auth/login'
+          - 'https://photos.{{ secret "/run/secrets/DOMAIN_NAME" }}/user-settings'
+          - 'app.immich:/'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'email'
+        userinfo_signed_response_alg: 'none'
+      - client_id: 'homarr'
+        client_name: 'Homarr'
+        client_secret: '$argon2id$v=19$m=65536,t=3,p=4$lAyJRqibBSG4W3zHNtFBVA$b4USkJVoOK39lFzLyOSU1Tvxt1/oOyQW6Bv0j8bSoKA'  # The digest of 'insecure_secret'.
+        public: false
+        authorization_policy: 'two_factor'
+        redirect_uris:
+          - 'http://home.{{ secret "/run/secrets/DOMAIN_NAME" }}/api/auth/callback/oidc'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'groups'
+          - 'email'
+        userinfo_signed_response_alg: 'none'
+        token_endpoint_auth_method: 'client_secret_basic'
+        #consent_mode: implicit # self hosted
+      - client_id: 'jellyfin'
+        client_name: 'Jellyfin'
+        client_secret: '$argon2id$v=19$m=65536,t=3,p=4$kYADf4Ps1mpRSPXj38AjSA$l5kqZ7FggpFJfp8vt3Cb/olKE9BWyUZfzjLDlyUeB90'  # The digest of 'insecure_secret'.
+        public: false
+        authorization_policy: 'two_factor'
+        require_pkce: true
+        pkce_challenge_method: 'S256'
+        redirect_uris:
+          - 'https://media.{{ secret "/run/secrets/DOMAIN_NAME" }}/sso/OID/redirect/authelia'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'groups'
+        userinfo_signed_response_alg: 'none'
+        token_endpoint_auth_method: 'client_secret_post'
+      - client_id: 'paperless'
+        client_name: 'Paperless'
+        client_secret: '$argon2id$v=19$m=65536,t=3,p=4$VsBW+Qae9lDm3xzipUQOBQ$cBMHhhA9Uf3SmyCavfiWL9jjjD9ZkMgPTXVNikKf3Dc'  # The digest of 'insecure_secret'.
+        public: false
+        authorization_policy: 'two_factor'
+        require_pkce: true
+        pkce_challenge_method: 'S256'
+        redirect_uris:
+          - 'https://documents.{{ secret "/run/secrets/DOMAIN_NAME" }}/accounts/authelia/login/callback'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'email'
+          - 'groups'
+        userinfo_signed_response_alg: 'none'
+        token_endpoint_auth_method: 'client_secret_basic'
+      - client_id: 'portainer'
+        client_name: 'Portainer'
+        client_secret: '$argon2id$v=19$m=65536,t=3,p=4$XBWluI7W3CYnvYtQKllT+g$Ru8bnBY3XMBGHZwucaFgTjgBLhgKf3gnkERN67qTLIg'  # The digest of 'insecure_secret'.
+        public: false
+        authorization_policy: 'two_factor'
+        redirect_uris:
+          - 'https://portainer.{{ secret "/run/secrets/DOMAIN_NAME" }}'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'groups'
+          - 'email'
+        userinfo_signed_response_alg: 'none'
+      - client_id: 'seafile'
+        client_name: 'Seafile'
+        client_secret: '$argon2id$v=19$m=65536,t=3,p=4$UDT7Bkel4qR7cnObu7R5/A$1q3axNVfn1RQHr05MXRJLawcQmFGBbNhdtFNUKYoi1Q'  # The digest of 'insecure_secret'.
+        public: false
+        authorization_policy: 'two_factor'
+        redirect_uris:
+          - 'https://files.{{ secret "/run/secrets/DOMAIN_NAME" }}/oauth/callback/'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'email'
+        userinfo_signed_response_alg: 'none'
+        token_endpoint_auth_method: 'client_secret_basic'

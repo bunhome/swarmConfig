@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    networks:
+      - overlay_public
+    # set shared memory limit when deploy via swarm stack
+    volumes:
+      - /var/data/db/logs:/var/lib/postgresql
+      - /var/data/db/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD_FILE: run/secrets/POSTGRES_ROOT_PASSWORD
+    secrets:
+      - POSTGRES_ROOT_PASSWORD
+      - AUTHELIA_STORAGE_POSTGRES_PASSWORD
+    deploy:
+      labels:
+        - "traefik.enable=false"
+
+networks:
+  # Use the previously created public network "overlay_public", shared with other
+  # services that need to be publicly available via this Traefik
+  overlay_public:
+    external: true
+
+secrets:
+  POSTGRES_ROOT_PASSWORD:
+    external: true
+  AUTHELIA_STORAGE_POSTGRES_PASSWORD:
+    external: true

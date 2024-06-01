@@ -1,0 +1,13 @@
+# server.toml
+[server]
+bind_addr = "0.0.0.0:{{ secret "RATHOLE_CONNECTION_PORT" }}" # Necessary. The address that the server listens for clients. Generally only the port needs to be change.
+default_token = "{{ secret "RATHOLE_DEFAULT_TOKEN" }}" # Optional
+heartbeat_interval = 30 # Optional.
+
+[server.services.http]
+bind_addr = "0.0.0.0:80"
+type = "tcp"
+
+[server.services.https]
+bind_addr = "0.0.0.0:443"
+type = "tcp"

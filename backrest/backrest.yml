@@ -1,0 +1,36 @@
+version: "3.2"
+services:
+  backrest:
+    image: garethgeorge/backrest
+    container_name: backrest 
+    volumes:
+      - /var/data/backrest/data:/data
+      - /var/data/backrest/config:/config
+      - /var/data/backrest/cache:/cache
+      - /home/denis/:/userdata # mount your directories to backup somewhere in the filesystem
+    environment:
+      - BACKREST_DATA=/data # path for backrest data. restic binary and the database are placed here.
+      - BACKREST_CONFIG=/config/config.json # path for the backrest config file.
+      - XDG_CACHE_HOME=/cache # path for the restic cache which greatly improves performance.
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.backup.rule=Host(`backup.${domain}`)"
+        - "traefik.http.routers.backup.entrypoints=https"
+        - "traefik.http.routers.backup.tls=true"
+        - "traefik.http.services.backup.loadbalancer.server.port=9898"
+        # uncomment if you want to protect portainer with traefik-forward-auth using traefikv2
+        # - "traefik.http.routers.portainer.middlewares=forward-auth"    
+    networks:
+      - overlay_public
+    ports:
+      - "9898:9898"
+
+networks:
+  overlay_public:
+    external: true
+

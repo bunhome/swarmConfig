@@ -1,0 +1,48 @@
+version: '3'
+#---------------------------------------------------------------------#
+#     Homarr - A simple, yet powerful dashboard for your server.     #
+#---------------------------------------------------------------------#
+services:
+  homarr:
+    image: ghcr.io/ajnart/homarr:latest
+    restart: unless-stopped
+    volumes:
+      - /var/data/homarr/configs:/app/data/configs
+      - /var/data/homarr/icons:/app/public/icons
+      - /var/data/homarr/data:/data
+    networks:
+      - overlay_public
+    environment:
+      - 'BASE_URL=home.${domain}'
+      - 'TZ=Europe/Berlin'
+      - 'DISABLE_ANALYTICS=true'
+      - 'AUTH_PROVIDER=oidc'
+      - 'AUTH_OIDC_URI=https://auth.${domain}/application/o/homarr'
+      #- 'NEXTAUTH_URL=https://home.${domain}/'
+      - 'AUTH_OIDC_CLIENT_SECRET=ajXxhHRndeBbLW8xpd4oLVmsk204evgXbOmW6a19upDRiCOfw3JcvGz75k6Oj3mG'
+      - 'AUTH_OIDC_CLIENT_ID=homarr'
+      - 'AUTH_OIDC_CLIENT_NAME=Authelia'
+      #- 'AUTH_LOGOUT_REDIRECT_URL=https://auth.${domain}'
+    ports:
+      - '7575:7575'
+    deploy:
+      labels:
+        # traefik
+        - traefik.enable=true
+        - traefik.docker.network=overlay_public
+        - "traefik.http.services.homarr.loadbalancer.server.port=7575"
+        # traefikv2
+        - "traefik.http.routers.homarr.rule=Host(`home.${domain}`)"
+        - 'traefik.http.routers.homarr.tls=true'
+        - 'traefik.http.routers.homarr.tls.certresolver=cloudflare'
+        - 'traefik.http.routers.homarr.tls.domains[0].main=${domain}'
+        - 'traefik.http.routers.homarr.tls.domains[0].sans=*.${domain}'
+        - 'traefik.http.routers.homarr.entrypoints=https,https-external'
+
+secrets:
+  HOMARR_OIDC_CLIENT_SECRET:
+    external: true
+
+networks:
+  overlay_public:
+    external: true
