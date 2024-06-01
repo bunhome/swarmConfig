@@ -74,7 +74,7 @@ services:
 # documents are written in.
       PAPERLESS_OCR_LANGUAGE: deu
 
-      PAPERLESS_URL: 'docs.${domain}'
+      PAPERLESS_URL: 'https://docs.${domain}'
     deploy:
       labels:
         - 'traefik.enable=true'
