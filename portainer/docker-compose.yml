@@ -2,7 +2,7 @@ version: '3.2'
 
 services:
   portainer:
-    image: portainer/portainer-ce
+    image: portainer/portainer-ce:sts
     command: -H tcp://tasks.agent:9001 --tlsskipverify
     ports:
       - "9000:9000"
@@ -31,7 +31,7 @@ services:
         - 'traefik.http.routers.portainer.entrypoints=https'
 
   agent:
-    image: portainer/agent
+    image: portainer/agent:sts
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
