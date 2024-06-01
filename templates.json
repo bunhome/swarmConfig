@@ -1,65 +1,65 @@
 {
-	"version": 2,
-	"templates": [
+  "version": "2",
+  "templates": [
+    {
+      "type": 2,
+      "title": "testpages",
+      "description": "adds testpages for internal-only and external-only to test your settings",
+      "note": "traefik and overlay must be deployed first",
+      "categories": [
+        "testing"
+      ],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "test/test.yml"
+      },
+      "env": [
         {
-            "type": 2,
-            "title": "testpages",
-            "description": "adds testpages for internal-only and external-only to test your settings",
-            "note": "traefik and overlay must be deployed first",
-            "categories": [
-                "testing"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "test/test.yml"
-            },
-            "env": [
-                {
-                    "name": "domain",
-                    "label": "Top level domain",
-                    "default": "example.com"
-                }
-            ]
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "paperless",
+      "description": "",
+      "note": "traefik and overlay must be deployed first, needs redis container deployed, needs db container and a paperless user+password+db",
+      "categories": [
+        "documents"
+      ],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "paperless-ngx/paperless-ngx.yml"
+      },
+      "env": [
+        {
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
         },
         {
-            "type": 2,
-            "title": "paperless",
-            "description": "",
-            "note": "traefik and overlay must be deployed first, needs redis container deployed, needs db container and a paperless user+password+db",
-            "categories": [
-                "documents"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "paperless-ngx/paperless-ngx.yml"
-            },
-            "env": [
-                {
-                    "name": "domain",
-                    "label": "Top level domain",
-                    "default": "example.com"
-                },
-                {
-                    "name": "paperless_media_folder",
-                    "label": "Media Folder",
-                    "description": "Where paperless puts its media. Folder must be ready!",
-                    "default": "/home/user/documents/media"
-                },
-                {
-                    "name": "paperless_export_folder",
-                    "label": "Export Folder",
-                    "description": "Where paperless exports data. Folder must be ready!",
-                    "default": "/home/user/documents/export"
-                },
-                {
-                    "name": "paperless_import_folder",
-                    "label": "Import Folder",
-                    "description": "Where paperless imports data from. Folder must be ready!",
-                    "default": "/home/user/documents/import"
-                }
-            ]
+          "name": "paperless_media_folder",
+          "label": "Media Folder",
+          "description": "Where paperless puts its media. Folder must be ready!",
+          "default": "/home/user/documents/media"
+        },
+        {
+          "name": "paperless_export_folder",
+          "label": "Export Folder",
+          "description": "Where paperless exports data. Folder must be ready!",
+          "default": "/home/user/documents/export"
+        },
+        {
+          "name": "paperless_import_folder",
+          "label": "Import Folder",
+          "description": "Where paperless imports data from. Folder must be ready!",
+          "default": "/home/user/documents/import"
         }
-    ]
+      ]
+    }
+  ]
 }
