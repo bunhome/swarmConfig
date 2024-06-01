@@ -46,7 +46,11 @@ services:
       - PAPERLESS_DB_SECRET
       - PAPERLESS_SECRET_KEY
       - PAPERLESS_ADMIN_PASSWORD
-      - PAPERLESS_OIDC_PROVIDER
+      - PAPERLESS_OIDC_SECRET
+      - DOMAIN_NAME
+    configs:
+      - source: paperless-oidc-config
+        target: '/oidc_config'
     environment:
       PAPERLESS_ADMIN_USER: admin
       PAPERLESS_ADMIN_PASSWORD_FILE: '/run/secrets/PAPERLESS_ADMIN_PASSWORD' 
@@ -56,7 +60,7 @@ services:
       PAPERLESS_DBNAME: 'paperless'
       PAPERLESS_DBPASS_FILE: '/run/secrets/PAPERLESS_DB_SECRET'
       PAPERLESS_APPS: 'allauth.socialaccount.providers.openid_connect'
-      PAPERLESS_SOCIALACCOUNT_PROVIDERS_FILE: '/run/secrets/PAPERLESS_OIDC_PROVIDER'
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS_FILE: '/oidc_config'
 # The UID and GID of the user used to run paperless in the container. Set this
 # to your UID and GID on the host so that you have write access to the
 # consumption directory.
@@ -96,6 +100,10 @@ volumes:
   data:
   redisdata:
 
+configs:
+  paperless-oidc-config:
+    external: true
+
 secrets:
   PAPERLESS_DB_SECRET:
     external: true
@@ -103,7 +111,9 @@ secrets:
     external: true
   PAPERLESS_ADMIN_PASSWORD:
     external: true
-  PAPERLESS_OIDC_PROVIDER:
+  PAPERLESS_OIDC_SECRET:
+    external: true
+  DOMAIN_NAME:
     external: true
 
 networks:
