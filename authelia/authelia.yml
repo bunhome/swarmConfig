@@ -15,7 +15,7 @@ services:
       AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE: '/run/secrets/AUTHELIA_OIDC_HMAC'
       TZ: 'Europe/Berlin'
     volumes:
-      - '/var/data/config/authelia:/config'
+      - '${authelia_config_folder}/authelia:/config'
       - '/var/data/authelia:/runTime'
     secrets: 
       - 'DOMAIN_NAME'

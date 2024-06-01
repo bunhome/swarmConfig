@@ -511,6 +511,7 @@ session:
   redis:
     host: 'redis'
     port: 6379
+    database_index: 0
     ## Use a unix socket instead
     # host: '/var/run/redis/redis.sock'
 

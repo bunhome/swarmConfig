@@ -7,7 +7,7 @@ services:
       - 'start.sh' 
       - 'immich'
     volumes:
-      - /home/denis/media/pictures:/usr/src/app/upload
+      - ${home_folder}/media/pictures:/usr/src/app/upload
     environment:
       - 'TZ=Europe/Berlin'
       - 'LOG_LEVEL=verbose'
@@ -34,7 +34,7 @@ services:
     image: ghcr.io/immich-app/immich-server:release
     command: ['start.sh', 'microservices']
     volumes:
-      - /home/denis/media/pictures:/usr/src/app/upload
+      - ${home_folder}media/pictures:/usr/src/app/upload
     environment:
       - 'TZ=Europe/Berlin'
       - 'LOG_LEVEL=verbose'

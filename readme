@@ -22,7 +22,16 @@ sondern auch DNS-Rebind-Schutz aushebeln.
 Alle secrets von hand in docker secrets einbinden, so sind sie immer verfügbar
 aber verschlüsselt. Am besten docker raft log backup machen.
 
- secrets: 
+ENVIRONMENT:
+  domain
+  authelia_config_folder
+  home_folder
+  paperless_media_folder
+  paperless_export_folder
+  paperless_import_folder
+
+ secrets:
+   DOMAIN_NAME 
    AUTHELIA_JWT_SECRET                       
    AUTHELIA_NOTIFIER_SMTP_PASSWORD               
    AUTHELIA_OIDC_HMAC                            
@@ -37,6 +46,8 @@ aber verschlüsselt. Am besten docker raft log backup machen.
    POSTGRES_ROOT_PASSWORD                     
    RATHOLE_ADDRESS                               
    RATHOLE_CONNECTION_PORT                        
-   RATHOLE_DEFAULT_TOKEN            
+   RATHOLE_DEFAULT_TOKEN 
+   PAPERLESS_DB_SECRET
+   PAPERLESS_SECRET_KEY           
 
 ## Docker swarm lock
