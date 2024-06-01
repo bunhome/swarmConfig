@@ -80,12 +80,12 @@ services:
 # documents are written in.
       PAPERLESS_OCR_LANGUAGE: deu
 
-      PAPERLESS_URL: 'https://documents.${domain}'
+      PAPERLESS_URL: 'https://docs.${domain}'
     deploy:
       labels:
         - 'traefik.enable=true'
         - 'traefik.http.services.paperless.loadbalancer.server.port=8000'
-        - 'traefik.http.routers.paperless.rule=Host(`documents.${domain}`)'
+        - 'traefik.http.routers.paperless.rule=Host(`docs.${domain}`)'
         - 'traefik.http.routers.paperless.tls=true'
         - 'traefik.http.routers.paperless.tls.certresolver=cloudflare'
         - 'traefik.http.routers.paperless.tls.domains[0].main=${domain}'
