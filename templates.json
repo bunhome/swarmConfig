@@ -7,7 +7,8 @@
       "description": "adds testpages for internal-only and external-only to test your settings",
       "note": "traefik and overlay must be deployed first",
       "categories": [
-        "testing"
+        "testing",
+        "Network"
       ],
       "platform": "linux",
       "repository": {
@@ -58,6 +59,48 @@
           "label": "Import Folder",
           "description": "Where paperless imports data from. Folder must be ready!",
           "default": "/home/user/documents/import"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "authelia",
+      "description": "adds the authelia middleware with sso",
+      "note": [
+        "traefik and overlay must be deployed first",
+        "Following Secrets must be defined ",
+        "DOMAIN_NAME",
+        "ADMIN_MAIL",
+        "AUTHELIA_JWT_SECRET- should be super safe!",
+        "AUTHELIA_SESSION_SECRET - should be super safe!",
+        "AUTHELIA_STORAGE_POSTGRES_PASSWORD",
+        "AUTHELIA_NOTIFIER_SMTP_PASSWORD - get from mail provider!",
+        "AUTHELIA_STORAGE_ENCRYPTION_KEY",
+        "AUTHELIA_OIDC_HMAC",
+        "AUTHELIA_OIDC_JWKS_KEY",
+        "AUTHELIA_OIDC_IMMICH_HASH",
+        "AUTHELIA_OIDC_HOMARR_HASH",
+        "AUTHELIA_OIDC_JELLYFIN_HASH",
+        "AUTHELIA_OIDC_PAPERLESS_HASH",
+        "AUTHELIA_OIDC_PORTAINER_HASH",
+        "AUTHELIA_OIDC_SEAFILE_HASH",
+        "The following configs must be defined",
+        "authelia_config from https://raw.githubusercontent.com/bunhome/swarmConfig/master/authelia/configuration.yml",
+        "authelia_user - this is the user database as in the documentation"
+      ],
+      "categories": [
+        "Network"
+      ],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "authelia/authelia.yml"
+      },
+      "env": [
+        {
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
         }
       ]
     }
