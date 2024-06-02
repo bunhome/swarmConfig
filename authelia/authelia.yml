@@ -1,5 +1,4 @@
-version: '3.3'
-
+version: '3.9'
 services:
   authelia:
     image: 'docker.io/authelia/authelia:latest'
@@ -15,10 +14,10 @@ services:
       AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE: '/run/secrets/AUTHELIA_OIDC_HMAC'
       TZ: 'Europe/Berlin'
     volumes:
-      - '${authelia_config_folder}:/config'
-      - '/var/data/authelia:/runTime'
+      - 'authelia_log:/runTime/logs/'
     secrets: 
       - 'DOMAIN_NAME'
+      - 'ADMIN_MAIL'
       - 'AUTHELIA_JWT_SECRET'
       - 'AUTHELIA_SESSION_SECRET'
       - 'AUTHELIA_STORAGE_POSTGRES_PASSWORD'
@@ -26,6 +25,17 @@ services:
       - 'AUTHELIA_STORAGE_ENCRYPTION_KEY'
       - 'AUTHELIA_OIDC_HMAC'
       - 'AUTHELIA_OIDC_JWKS_KEY'
+      - 'AUTHELIA_OIDC_IMMICH_HASH'
+      - 'AUTHELIA_OIDC_HOMARR_HASH'
+      - 'AUTHELIA_OIDC_JELLYFIN_HASH'
+      - 'AUTHELIA_OIDC_PAPERLESS_HASH'
+      - 'AUTHELIA_OIDC_PORTAINER_HASH'
+      - 'AUTHELIA_OIDC_SEAFILE_HASH'
+    configs:
+      - source: authelia_config
+        target: /config/configuration.yml
+      - source: authelia_users
+        target: /runTime/users_database.yml
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -43,7 +53,14 @@ networks:
   overlay_public:
     external: true
 
+volumes:
+  authelia_log:
+
 secrets:
+  DOMAIN_NAME:
+    external: true
+  ADMIN_MAIL:
+    external: true
   AUTHELIA_JWT_SECRET:
     external: true
   AUTHELIA_SESSION_SECRET:
@@ -54,11 +71,25 @@ secrets:
     external: true
   AUTHELIA_NOTIFIER_SMTP_PASSWORD:
     external: true
-  AUTHELIA_STORAGE_ENCRYPTION_KEY:
-    external: true
   AUTHELIA_OIDC_HMAC:
     external: true
   AUTHELIA_OIDC_JWKS_KEY:
     external: true
-  DOMAIN_NAME:
+  AUTHELIA_OIDC_IMMICH_HASH:
+    external: true
+  AUTHELIA_OIDC_HOMARR_HASH:
+    external: true
+  AUTHELIA_OIDC_JELLYFIN_HASH:
+    external: true
+  AUTHELIA_OIDC_PAPERLESS_HASH:
+    external: true
+  AUTHELIA_OIDC_PORTAINER_HASH:
+    external: true
+  AUTHELIA_OIDC_SEAFILE_HASH:
+    external: true
+
+configs:
+  authelia_config:
+    external: true
+  authelia_users:
     external: true
