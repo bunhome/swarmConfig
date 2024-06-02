@@ -4,6 +4,8 @@
         {
             "type": 2,
             "title": "Testpages",
+            "name": "testpages",
+            "logo": "https://imgs.search.brave.com/Z4_FoAh0ODYw1C42fBMvf40Miy-5uWqkKpLpreCLyBs/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3RpL2dyYXRp/cy12ZWt0b3IvcDEv/NDIzNjU0LWV4cGVy/aW1lbnQtc3ltYm9s/LWtvc3Rlbmxvcy12/ZWt0b3IuanBn",
             "description": "adds testpages for internal-only and external-only to test your settings",
             "note": "traefik and overlay must be deployed first",
             "categories": [
@@ -25,7 +27,9 @@
         },
         {
             "type": 2,
-            "title": "Paperless",
+            "title": "Paperless-ngx",
+            "name": "paperless",
+            "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/paperless.png",
             "description": "",
             "note": "traefik and overlay must be deployed first, needs redis container deployed, needs db container and a paperless user+password+db",
             "categories": [
@@ -65,6 +69,8 @@
         {
             "type": 2,
             "title": "3. Authelia",
+            "name": "authelia",
+            "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/authelia.png",
             "description": "Adds the authelia middleware with sso",
             "note": "Traefik and overlay must be deployed first. \n        Following Secrets must be defined  \n       - DOMAIN_NAME \n       - ADMIN_MAIL \n       - AUTHELIA_JWT_SECRET- should be super safe! \n       - AUTHELIA_SESSION_SECRET - should be super safe! \n       - AUTHELIA_STORAGE_POSTGRES_PASSWORD \n       - AUTHELIA_NOTIFIER_SMTP_PASSWORD - get from mail provider! \n       - AUTHELIA_STORAGE_ENCRYPTION_KEY \n       - AUTHELIA_OIDC_HMAC \n       - AUTHELIA_OIDC_JWKS_KEY \n       - AUTHELIA_OIDC_IMMICH_HASH \n       - AUTHELIA_OIDC_HOMARR_HASH \n       - AUTHELIA_OIDC_JELLYFIN_HASH \n       - AUTHELIA_OIDC_PAPERLESS_HASH \n       - AUTHELIA_OIDC_PORTAINER_HASH \n       - AUTHELIA_OIDC_SEAFILE_HASH \n        The following configs must be defined \n       - authelia_config from https://raw.githubusercontent.com/bunhome/swarmConfig/master/authelia/configuration.yml \n       - authelia_user - This is the user database as in the documentation",
             "categories": [
@@ -87,7 +93,9 @@
         },
         {
             "type": 2,
-            "name": "2. Traefik",
+            "title": "2. Traefik",
+            "name": "traefik",
+            "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/traefik.png",
             "description": "Adds traefik reverse proxy with dns challenge from cloudflare and authelia middleware",
             "note": "Overlay network and secret CF_DNS_API_TOKEN must be deployed first!",
             "categories": [
@@ -115,7 +123,9 @@
         },
         {
             "type": 2,
-            "name": "1. Overlay",
+            "title": "1. Overlay",
+            "name": "overlay",
+            "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/traefik.png",
             "description": "Adds an Overlay Network that all services that should be reachable through Traefik can connect to.",
             "categories": [
                 "BASIC",
