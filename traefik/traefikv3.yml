@@ -34,7 +34,7 @@ services:
       #- --entrypoints.https-external.middlewares=authelia@swarm
       
       # Create the certificate resolver
-      - --certificatesresolvers.cloudflare.acme.email=denmaier@gmail.com
+      - --certificatesresolvers.cloudflare.acme.email=${ACME_MAIL}
       - --certificatesresolvers.cloudflare.acme.storage=/certificates/acme.json
       - --certificatesresolvers.cloudflare.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
       - --certificatesresolvers.cloudflare.acme.dnsChallenge.provider=cloudflare

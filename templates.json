@@ -1,108 +1,130 @@
 {
-  "version": "2",
-  "templates": [
-    {
-      "type": 2,
-      "title": "testpages",
-      "description": "adds testpages for internal-only and external-only to test your settings",
-      "note": "traefik and overlay must be deployed first",
-      "categories": [
-        "testing",
-        "Network"
-      ],
-      "platform": "linux",
-      "repository": {
-        "url": "https://github.com/bunhome/swarmConfig.git",
-        "stackfile": "test/test.yml"
-      },
-      "env": [
+    "version": "2",
+    "templates": [
         {
-          "name": "domain",
-          "label": "Top level domain",
-          "default": "example.com"
-        }
-      ]
-    },
-    {
-      "type": 2,
-      "title": "paperless",
-      "description": "",
-      "note": "traefik and overlay must be deployed first, needs redis container deployed, needs db container and a paperless user+password+db",
-      "categories": [
-        "documents"
-      ],
-      "platform": "linux",
-      "repository": {
-        "url": "https://github.com/bunhome/swarmConfig.git",
-        "stackfile": "paperless-ngx/paperless-ngx.yml"
-      },
-      "env": [
-        {
-          "name": "domain",
-          "label": "Top level domain",
-          "default": "example.com"
+            "type": 2,
+            "title": "Testpages",
+            "description": "adds testpages for internal-only and external-only to test your settings",
+            "note": "traefik and overlay must be deployed first",
+            "categories": [
+                "testing",
+                "Network"
+            ],
+            "platform": "linux",
+            "repository": {
+                "url": "https://github.com/bunhome/swarmConfig.git",
+                "stackfile": "test/test.yml"
+            },
+            "env": [
+                {
+                    "name": "domain",
+                    "label": "Top level domain",
+                    "default": "example.com"
+                }
+            ]
         },
         {
-          "name": "paperless_media_folder",
-          "label": "Media Folder",
-          "description": "Where paperless puts its media. Folder must be ready!",
-          "default": "/home/user/documents/media"
+            "type": 2,
+            "title": "Paperless",
+            "description": "",
+            "note": "traefik and overlay must be deployed first, needs redis container deployed, needs db container and a paperless user+password+db",
+            "categories": [
+                "documents"
+            ],
+            "platform": "linux",
+            "repository": {
+                "url": "https://github.com/bunhome/swarmConfig.git",
+                "stackfile": "paperless-ngx/paperless-ngx.yml"
+            },
+            "env": [
+                {
+                    "name": "domain",
+                    "label": "Top level domain",
+                    "default": "example.com"
+                },
+                {
+                    "name": "paperless_media_folder",
+                    "label": "Media Folder",
+                    "description": "Where paperless puts its media. Folder must be ready!",
+                    "default": "/home/user/documents/media"
+                },
+                {
+                    "name": "paperless_export_folder",
+                    "label": "Export Folder",
+                    "description": "Where paperless exports data. Folder must be ready!",
+                    "default": "/home/user/documents/export"
+                },
+                {
+                    "name": "paperless_import_folder",
+                    "label": "Import Folder",
+                    "description": "Where paperless imports data from. Folder must be ready!",
+                    "default": "/home/user/documents/import"
+                }
+            ]
         },
         {
-          "name": "paperless_export_folder",
-          "label": "Export Folder",
-          "description": "Where paperless exports data. Folder must be ready!",
-          "default": "/home/user/documents/export"
+            "type": 2,
+            "title": "3. Authelia",
+            "description": "Adds the authelia middleware with sso",
+            "note": "\"Traefik and overlay must be deployed first. \n        Following Secrets must be defined  \n       - DOMAIN_NAME \n       - ADMIN_MAIL \n       - AUTHELIA_JWT_SECRET- should be super safe! \n       - AUTHELIA_SESSION_SECRET - should be super safe! \n       - AUTHELIA_STORAGE_POSTGRES_PASSWORD \n       - AUTHELIA_NOTIFIER_SMTP_PASSWORD - get from mail provider! \n       - AUTHELIA_STORAGE_ENCRYPTION_KEY \n       - AUTHELIA_OIDC_HMAC \n       - AUTHELIA_OIDC_JWKS_KEY \n       - AUTHELIA_OIDC_IMMICH_HASH \n       - AUTHELIA_OIDC_HOMARR_HASH \n       - AUTHELIA_OIDC_JELLYFIN_HASH \n       - AUTHELIA_OIDC_PAPERLESS_HASH \n       - AUTHELIA_OIDC_PORTAINER_HASH \n       - AUTHELIA_OIDC_SEAFILE_HASH \n        The following configs must be defined \n       - authelia_config from https://raw.githubusercontent.com/bunhome/swarmConfig/master/authelia/configuration.yml \n       - authelia_user - This is the user database as in the documentation\"",
+            "categories": [
+                "BASIC",
+                "FOUNDATION",
+                "MUST-INSTALL"
+            ],
+            "platform": "linux",
+            "repository": {
+                "url": "https://github.com/bunhome/swarmConfig.git",
+                "stackfile": "authelia/authelia.yml"
+            },
+            "env": [
+                {
+                    "name": "domain",
+                    "label": "Top level domain",
+                    "default": "example.com"
+                }
+            ]
         },
         {
-          "name": "paperless_import_folder",
-          "label": "Import Folder",
-          "description": "Where paperless imports data from. Folder must be ready!",
-          "default": "/home/user/documents/import"
-        }
-      ]
-    },
-    {
-      "type": 2,
-      "title": "authelia",
-      "description": "adds the authelia middleware with sso",
-      "note": [
-        "traefik and overlay must be deployed first",
-        "Following Secrets must be defined ",
-        "DOMAIN_NAME",
-        "ADMIN_MAIL",
-        "AUTHELIA_JWT_SECRET- should be super safe!",
-        "AUTHELIA_SESSION_SECRET - should be super safe!",
-        "AUTHELIA_STORAGE_POSTGRES_PASSWORD",
-        "AUTHELIA_NOTIFIER_SMTP_PASSWORD - get from mail provider!",
-        "AUTHELIA_STORAGE_ENCRYPTION_KEY",
-        "AUTHELIA_OIDC_HMAC",
-        "AUTHELIA_OIDC_JWKS_KEY",
-        "AUTHELIA_OIDC_IMMICH_HASH",
-        "AUTHELIA_OIDC_HOMARR_HASH",
-        "AUTHELIA_OIDC_JELLYFIN_HASH",
-        "AUTHELIA_OIDC_PAPERLESS_HASH",
-        "AUTHELIA_OIDC_PORTAINER_HASH",
-        "AUTHELIA_OIDC_SEAFILE_HASH",
-        "The following configs must be defined",
-        "authelia_config from https://raw.githubusercontent.com/bunhome/swarmConfig/master/authelia/configuration.yml",
-        "authelia_user - this is the user database as in the documentation"
-      ],
-      "categories": [
-        "Network"
-      ],
-      "platform": "linux",
-      "repository": {
-        "url": "https://github.com/bunhome/swarmConfig.git",
-        "stackfile": "authelia/authelia.yml"
-      },
-      "env": [
+            "name": "2. Traefik",
+            "description": "Adds traefik reverse proxy with dns challenge from cloudflare and authelia middleware",
+            "note": "Overlay network and secret CF_DNS_API_TOKEN must be deployed first!",
+            "categories": [
+                "BASIC",
+                "FOUNDATION",
+                "MUST-INSTALL"
+            ],
+            "platform": "linux",
+            "repository": {
+                "url": "https://github.com/bunhome/swarmConfig.git",
+                "stackfile": "traefik/traefik.yml"
+            },
+            "env": [
+                {
+                    "name": "domain",
+                    "label": "Top level domain",
+                    "default": "example.com"
+                },
+                {
+                    "name": "ACME_MAIL",
+                    "label": "Mail that should be used for ACME",
+                    "default": "user@example.com"
+                }
+            ]
+        },
         {
-          "name": "domain",
-          "label": "Top level domain",
-          "default": "example.com"
+            "name": "1. Overlay",
+            "description": "Adds an Overlay Network that all services that should be reachable through Traefik can connect to.",
+            "categories": [
+                "BASIC",
+                "FOUNDATION",
+                "MUST-INSTALL"
+            ],
+            "platform": "linux",
+            "repository": {
+                "url": "https://github.com/bunhome/swarmConfig.git",
+                "stackfile": "overlay/overlay.yml"
+            }
         }
-      ]
-    }
-  ]
+    ]
 }
