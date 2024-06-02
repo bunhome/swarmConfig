@@ -66,7 +66,7 @@
             "type": 2,
             "title": "3. Authelia",
             "description": "Adds the authelia middleware with sso",
-            "note": "\"Traefik and overlay must be deployed first. \n        Following Secrets must be defined  \n       - DOMAIN_NAME \n       - ADMIN_MAIL \n       - AUTHELIA_JWT_SECRET- should be super safe! \n       - AUTHELIA_SESSION_SECRET - should be super safe! \n       - AUTHELIA_STORAGE_POSTGRES_PASSWORD \n       - AUTHELIA_NOTIFIER_SMTP_PASSWORD - get from mail provider! \n       - AUTHELIA_STORAGE_ENCRYPTION_KEY \n       - AUTHELIA_OIDC_HMAC \n       - AUTHELIA_OIDC_JWKS_KEY \n       - AUTHELIA_OIDC_IMMICH_HASH \n       - AUTHELIA_OIDC_HOMARR_HASH \n       - AUTHELIA_OIDC_JELLYFIN_HASH \n       - AUTHELIA_OIDC_PAPERLESS_HASH \n       - AUTHELIA_OIDC_PORTAINER_HASH \n       - AUTHELIA_OIDC_SEAFILE_HASH \n        The following configs must be defined \n       - authelia_config from https://raw.githubusercontent.com/bunhome/swarmConfig/master/authelia/configuration.yml \n       - authelia_user - This is the user database as in the documentation\"",
+            "note": "Traefik and overlay must be deployed first. \n        Following Secrets must be defined  \n       - DOMAIN_NAME \n       - ADMIN_MAIL \n       - AUTHELIA_JWT_SECRET- should be super safe! \n       - AUTHELIA_SESSION_SECRET - should be super safe! \n       - AUTHELIA_STORAGE_POSTGRES_PASSWORD \n       - AUTHELIA_NOTIFIER_SMTP_PASSWORD - get from mail provider! \n       - AUTHELIA_STORAGE_ENCRYPTION_KEY \n       - AUTHELIA_OIDC_HMAC \n       - AUTHELIA_OIDC_JWKS_KEY \n       - AUTHELIA_OIDC_IMMICH_HASH \n       - AUTHELIA_OIDC_HOMARR_HASH \n       - AUTHELIA_OIDC_JELLYFIN_HASH \n       - AUTHELIA_OIDC_PAPERLESS_HASH \n       - AUTHELIA_OIDC_PORTAINER_HASH \n       - AUTHELIA_OIDC_SEAFILE_HASH \n        The following configs must be defined \n       - authelia_config from https://raw.githubusercontent.com/bunhome/swarmConfig/master/authelia/configuration.yml \n       - authelia_user - This is the user database as in the documentation",
             "categories": [
                 "BASIC",
                 "FOUNDATION",
@@ -86,6 +86,7 @@
             ]
         },
         {
+            "type": 2,
             "name": "2. Traefik",
             "description": "Adds traefik reverse proxy with dns challenge from cloudflare and authelia middleware",
             "note": "Overlay network and secret CF_DNS_API_TOKEN must be deployed first!",
@@ -113,6 +114,7 @@
             ]
         },
         {
+            "type": 2,
             "name": "1. Overlay",
             "description": "Adds an Overlay Network that all services that should be reachable through Traefik can connect to.",
             "categories": [
