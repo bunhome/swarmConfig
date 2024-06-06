@@ -1,0 +1,20 @@
+secrets:
+  CLOUDFLARED_TOKEN_JSON:
+    external: true
+
+networks:
+  overlay_public:
+    external: true
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared
+    secrets:
+      - CLOUDFLARED_TOKEN_JSON
+    command: tunnel --credentials-file /run/secrets/CLOUDFLARED_TOKEN_JSON run dhomelab
+    deploy:
+      replicas: 1
+      labels:
+        - 'traefik.enable=false'
+    networks:
+      - overlay_public

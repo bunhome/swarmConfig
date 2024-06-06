@@ -137,6 +137,23 @@
                 "url": "https://github.com/bunhome/swarmConfig.git",
                 "stackfile": "overlay/overlay.yml"
             }
+        },
+        {
+            "type": 2,
+            "title": "Cloudflare Tunnel",
+            "name": "cloudflared",
+            "logo": "https://cf-assets.www.cloudflare.com/slt3lc6tev37/7bIgGp4hk4SFO0o3SBbOKJ/b48185dcf20c579960afad879b25ea11/CF_logo_stacked_blktype.jpg",
+            "description": "Adds tunnel to Cloudflare in order to reach services from the internet. Alternative to bastion server with rathole.",
+            "note": "Overlay network and secret CLOUDFLARED_TOKEN_JSON must be deployed first!",
+            "categories": [
+                "BASIC",
+                "TUNNEL"
+            ],
+            "platform": "linux",
+            "repository": {
+                "url": "https://github.com/bunhome/swarmConfig.git",
+                "stackfile": "cloudflared/cloudflared.yml"
+            }
         }
     ]
 }
