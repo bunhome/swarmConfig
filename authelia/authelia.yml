@@ -88,6 +88,8 @@ secrets:
     external: true
   AUTHELIA_OIDC_SEAFILE_HASH:
     external: true
+  AUTHELIA_OIDC_CLOUDFLARE_HASH:
+    external: true
 
 configs:
   authelia_config:
