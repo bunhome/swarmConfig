@@ -158,3 +158,15 @@ identity_providers:
           - 'email'
         userinfo_signed_response_alg: 'none'
         token_endpoint_auth_method: 'client_secret_basic'
+      - client_id: 'cloudflare'
+        client_name: 'Cloudflare ZeroTrust'
+        client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_CLOUDFLARE_HASH" | mindent 10 "|" | msquote }} #hashed
+        public: false
+        authorization_policy: 'two_factor'
+        redirect_uris:
+          - 'https://dmaier.cloudflareaccess.com/cdn-cgi/access/callback'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'email'
+        userinfo_signed_response_alg: 'none'

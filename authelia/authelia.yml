@@ -31,6 +31,7 @@ services:
       - 'AUTHELIA_OIDC_PAPERLESS_HASH'
       - 'AUTHELIA_OIDC_PORTAINER_HASH'
       - 'AUTHELIA_OIDC_SEAFILE_HASH'
+      - 'AUTHELIA_OIDC_CLOUDFLARE_HASH'
     configs:
       - source: authelia_config
         target: /config/configuration.yml
