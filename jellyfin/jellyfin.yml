@@ -8,8 +8,8 @@ services:
       - ${home_folder}/media/entertainment/tvshows:/data/tvshows
       - ${home_folder}/media/entertainment/movies:/data/movies
     environment:
-      - PUID: 1000
-      - GUID: 1000
+      - 'PUID=1000'
+      - 'GUID=1000'
       - 'TZ=Europe/Berlin'
       - 'DOCKER_MODS=linuxserver/mods:jellyfin-opencl-intel'
       - 'JELLYFIN_PublishedServerUrl=${AutoDiscover_HomeServer_Response}'
