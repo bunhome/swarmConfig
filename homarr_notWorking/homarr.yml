@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 #---------------------------------------------------------------------#
 #     Homarr - A simple, yet powerful dashboard for your server.     #
 #---------------------------------------------------------------------#
@@ -11,7 +11,7 @@ services:
       - /var/data/homarr/icons:/app/public/icons
       - /var/data/homarr/data:/data
     networks:
-      - ${network_name}
+      - defaultNetwork
     environment:
       - 'BASE_URL=home.${domain}'
       - 'TZ=Europe/Berlin'
@@ -29,7 +29,7 @@ services:
       labels:
         # traefik
         - traefik.enable=true
-        - traefik.docker.network=${network_name}
+        - traefik.docker.network=defaultNetwork
         - "traefik.http.services.homarr.loadbalancer.server.port=7575"
         # traefikv2
         - "traefik.http.routers.homarr.rule=Host(`home.${domain}`)"
@@ -44,5 +44,6 @@ secrets:
     external: true
 
 networks:
-  ${network_name}:
+  defaultNetwork:
+    name: ${network_name:?err}
     external: true

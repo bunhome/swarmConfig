@@ -1,4 +1,5 @@
-version: "3.8"
+version: '3.9'
+
 services:
   pgadmin:
     image: dpage/pgadmin4
@@ -12,7 +13,8 @@ services:
     volumes:
       - 'data:/var/lib/pgadmin'
     networks:
-      - ${network_name}
+      - defaultNetwork
+      - dbNetwork
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -27,7 +29,11 @@ secrets:
     external: true
 
 networks:
-  ${network_name}:
+  defaultNetwork:
+    name: ${network_name:?err}
+    external: true
+  dbNetwork:
+    name: ${db_network_name:?err}
     external: true
 
 volumes:

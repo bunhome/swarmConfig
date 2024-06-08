@@ -85,6 +85,11 @@
                     "label": "Import Folder",
                     "description": "Where paperless imports data from. Folder must be ready!",
                     "default": "/home/user/documents/import"
+                },
+                {
+                    "name": "db_service_name",
+                    "label": "Name of the DB service to use",
+                    "default": "db"
                 }
             ]
         },
@@ -184,6 +189,11 @@
                     "name": "network_name",
                     "label": "Name of the main network",
                     "default": "overlay_public"
+                },
+                {
+                    "name": "subnet",
+                    "label": "CIDR Subnet range",
+                    "default": "172.16.200.0/24"
                 }
             ]
         },
@@ -345,6 +355,11 @@
                     "name": "db_network_name",
                     "label": "on which network is the DB running?",
                     "default": "overlay_public"
+                },
+                {
+                    "name": "admin_mail",
+                    "label": "admin email",
+                    "default": "bob@example.com"
                 }
             ]
         },
@@ -410,11 +425,6 @@
                 {
                     "name": "network_name",
                     "label": "on which network is this running?",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "redis_network_name",
-                    "label": "on which network is the cache running?",
                     "default": "overlay_public"
                 },
                 {

@@ -1,9 +1,12 @@
+version: '3.9'
+
 secrets:
   CLOUDFLARED_TOKEN_JSON:
     external: true
 
 networks:
-  ${network_name}:
+  defaultNetwork:
+    name: ${network_name:?err}
     external: true
 
 services:
@@ -17,4 +20,4 @@ services:
       labels:
         - 'traefik.enable=false'
     networks:
-      - ${network_name}
+      - defaultNetwork

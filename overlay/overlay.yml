@@ -1,4 +1,4 @@
-version: "3.2"
+version: '3.9'
 
 # What is this?
 #
@@ -11,10 +11,11 @@ services:
     deploy: 
       replicas: 0
     networks:
-      - ${network_name}
+      - defaultNetwork
 
 networks:
-  ${network_name}:
+  defaultNetwork:
+    name: ${network_name:?err}
     driver: overlay
     attachable: true
     ipam:

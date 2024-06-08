@@ -1,4 +1,4 @@
-version: "3"
+version: '3.9'
 
 services:
   adguardhome:
@@ -13,7 +13,7 @@ services:
       - adguard_work:/opt/adguardhome/work
       - adguard_conf:/opt/adguardhome/conf
     networks:
-      - ${network_name}
+      - defaultNetwork
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -25,7 +25,8 @@ services:
     restart: unless-stopped
 
 networks:
-  ${network_name}:
+  defaultNetwork:
+    name: ${network_name:?err}
     external: true
 
 volumes:

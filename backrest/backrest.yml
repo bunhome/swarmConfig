@@ -1,4 +1,4 @@
-version: "3.2"
+version: '3.9'
 services:
   backrest:
     image: garethgeorge/backrest
@@ -25,12 +25,13 @@ services:
         - "traefik.http.services.backup.loadbalancer.server.port=9898"
         - "traefik.http.routers.backup.middlewares=authelia@swarm"    
     networks:
-      - ${network_name}
+      - defaultNetwork
     ports:
       - "9898:9898"
 
 networks:
-  ${network_name}:
+  defaultNetwork:
+    name: ${network_name:?err}
     external: true
 
 volumes:

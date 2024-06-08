@@ -1,8 +1,10 @@
+version: '3.9'
+
 services: 
   testpage_external:
     image: traefik/whoami
     networks:
-      - ${network_name}
+      - defaultNetwork
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -16,7 +18,7 @@ services:
   testpage_internal:
     image: traefik/whoami
     networks:
-      - ${network_name}
+      - defaultNetwork
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -28,5 +30,5 @@ services:
     restart: unless-stopped
 
 networks:
-  ${network_name}:
-    external: true
+  defaultNetwork:
+    name: ${network_name:?err}

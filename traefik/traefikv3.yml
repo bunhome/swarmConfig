@@ -1,7 +1,23 @@
-version: '3.3'
+version: '3.9'
+
+volumes:
+  # Create a volume to store the certificates, there is a constraint to make sure
+  # Traefik is always deployed to the same Docker node with the same volume containing
+  # the HTTPS certificates
+  overlay_public-certificates:
+
+networks:
+  # Use the previously created public network "defaultNetwork", shared with other
+  # services that need to be publicly available via this Traefik
+  defaultNetwork:
+    name: ${network_name:?err}
+    external: true
+    
+secrets:
+  CF_DNS_API_TOKEN:
+    external: true
 
 services:
-
   traefik:
     # Use the latest v3.0.x Traefik image available
     image: traefik:v3.0
@@ -14,7 +30,7 @@ services:
       # Enable Docker Swarm mode
       - --providers.swarm.endpoint=unix:///var/run/docker.sock
       - --providers.swarm.exposedbydefault=false
-      - --providers.swarm.network=${network_name}
+      - --providers.swarm.network=defaultNetwork
 
       # Create an entrypoint "http" listening on port 80
       - --entrypoints.http.address=:80
@@ -34,7 +50,7 @@ services:
       #- --entrypoints.https-external.middlewares=authelia@swarm
       
       # Create the certificate resolver
-      - --certificatesresolvers.cloudflare.acme.email=${ACME_MAIL}
+      - --certificatesresolvers.cloudflare.acme.email=${ACME_MAIL:?err}
       - --certificatesresolvers.cloudflare.acme.storage=/certificates/acme.json
       - --certificatesresolvers.cloudflare.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
       - --certificatesresolvers.cloudflare.acme.dnsChallenge.provider=cloudflare
@@ -51,15 +67,15 @@ services:
         # Enable Traefik for this service, to make it available in the public network
         - "traefik.enable=true"
         # request custom header
-        - "traefik.http.routers.api.rule=Host(`traefik.${domain}`)"
+        - "traefik.http.routers.api.rule=Host(`traefik.${domain:?err}`)"
         - "traefik.http.routers.api.entrypoints=https"
         - "traefik.http.routers.api.tls=true"
         # Use the special Traefik service api@internal with the web UI/Dashboard
         - "traefik.http.routers.api.service=api@internal"
         # Use the "cloudflare" (DNS) resolver created below
         - "traefik.http.routers.api.tls.certresolver=cloudflare"
-        - "traefik.http.routers.api.tls.domains[0].main=${domain}"
-        - "traefik.http.routers.api.tls.domains[0].sans=*.${domain}"
+        - "traefik.http.routers.api.tls.domains[0].main=${domain:?err}"
+        - "traefik.http.routers.api.tls.domains[0].sans=*.${domain:?err}"
         # Enable HTTP Basic auth, using the middleware created above
         - "traefik.http.routers.api.middlewares=authelia@swarm"
         # Define the port inside of the Docker service to use
@@ -68,7 +84,7 @@ services:
         constraints:
           # Make the traefik service run only on the node with this label
           # as the node with it has the volume for the certificates
-          #- node.labels.${network_name}.overlay_public-certificates == true
+          #- node.labels.defaultNetwork.overlay_public-certificates == true
           - node.role == manager
     secrets:
       - CF_DNS_API_TOKEN
@@ -83,21 +99,5 @@ services:
     networks:
       # Use the public network created to be shared between Traefik and
       # any other service that needs to be publicly available with HTTPS
-      - ${network_name}
+      - defaultNetwork
 
-
-volumes:
-  # Create a volume to store the certificates, there is a constraint to make sure
-  # Traefik is always deployed to the same Docker node with the same volume containing
-  # the HTTPS certificates
-  overlay_public-certificates:
-
-networks:
-  # Use the previously created public network "${network_name}", shared with other
-  # services that need to be publicly available via this Traefik
-  ${network_name}:
-    external: true
-
-secrets:
-  CF_DNS_API_TOKEN:
-    external: true

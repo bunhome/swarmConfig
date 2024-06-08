@@ -1,4 +1,4 @@
-version: "3"
+version: '3.9'
 
 services:
   rathole:
@@ -9,7 +9,7 @@ services:
     networks:
       # Use the public network created to be shared between Traefik and
       # any other service that needs to be publicly available with HTTPS
-      - ${network_name}
+      - defaultNetwork
     deploy:
       labels:
         - "traefik.enable=false"
@@ -17,7 +17,7 @@ services:
         constraints:
         # Make the traefik service run only on the node with this label
         # as the node with it has the volume for the certificates
-        #- node.labels.${network_name}.${network_name}-certificates == true
+        #- node.labels.defaultNetwork.defaultNetwork-certificates == true
           - node.role == manager
     configs:
       - source: rathole_config_toml
@@ -28,7 +28,8 @@ services:
       - RATHOLE_ADDRESS
 
 networks:
-  ${network_name}:
+  defaultNetwork:
+    name: ${network_name:?err}
     external: true
 
 configs:

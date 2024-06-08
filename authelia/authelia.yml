@@ -3,9 +3,9 @@ services:
   authelia:
     image: 'docker.io/authelia/authelia:latest'
     networks:
-      - ${network_name}
-      - ${redis_network_name}
-      - ${db_network_name}
+      - defaultNetwork
+      - redis_network
+      - db_network
     environment:
       X_AUTHELIA_CONFIG_FILTERS: 'template'
       AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: '/run/secrets/AUTHELIA_JWT_SECRET'
@@ -49,11 +49,17 @@ services:
         - 'traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'  
 
 networks:
-  # Use the previously created public network "${network_name}", shared with other
+  # Use the previously created public network "defaultNetwork", shared with other
   # services that need to be publicly available via this Traefik
-  ${network_name}:
+  defaultNetwork:
+    name: ${network_name:?err}
     external: true
-  ${db_network_name}:
+  db_network:
+    name: ${db_network_name}
+    external: true 
+  redis_network:
+    name: ${redis_network_name}
+    external: true 
 
 secrets:
   DOMAIN_NAME:

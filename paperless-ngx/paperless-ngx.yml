@@ -28,15 +28,15 @@
 # For more extensive installation and update instructions, refer to the
 # documentation.
 
-version: "3.4"
+version: '3.9'
 services:
 
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     networks: 
-      - ${network_name}
-      - ${redis_network_name}
-      - ${db_network_name}
+      - defaultNetwork
+      - redis_network
+      - db_network
     #ports:
     #  - "8010:8000"
     volumes:
@@ -50,7 +50,7 @@ services:
       - PAPERLESS_ADMIN_PASSWORD
       - PAPERLESS_OIDC_PROVIDER
     environment:
-      PAPERLESS_ADMIN_USER: admin
+      PAPERLESS_ADMIN_USER: admin_auto
       PAPERLESS_ADMIN_PASSWORD_FILE: '/run/secrets/PAPERLESS_ADMIN_PASSWORD' 
       PAPERLESS_REDIS: redis://redis:6379/1
       PAPERLESS_DBHOST: ${db_service_name}
@@ -94,9 +94,12 @@ secrets:
     external: true
 
 networks:
-  ${network_name}:
+  defaultNetwork:
+    name: ${network_name:?err}
     external: true
-  ${redis_network_name}:
+  redis_network:
+    name: ${redis_network_name}
     external: true
-  ${db_network_name}:
+  db_network:
+    name: ${db_network_name}
     external: true

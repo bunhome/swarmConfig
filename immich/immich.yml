@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 
 services:
   immich-server:
@@ -18,8 +18,8 @@ services:
     #ports:
     #  - 2283:3001
     networks:
-      - ${network_name}
-      - ${redis_network_name}
+      - defaultNetwork
+      - redis_network
       - internal
     deploy:
       labels:
@@ -48,7 +48,7 @@ services:
       - 'REDIS_DBINDEX=2'
     networks:
       - internal
-      - ${redis_network_name}
+      - redis_network
 
   immich-machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:release
@@ -79,9 +79,11 @@ services:
 
 
 networks:
-  ${network_name}:
+  defaultNetwork:
+    name: ${network_name:?err}
     external: true
-  ${redis_network_name}:
+  redis_network:
+    name: ${redis_network_name}
     external: true
   internal:
     driver: overlay
