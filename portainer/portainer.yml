@@ -11,7 +11,7 @@ services:
       - /var/data/portainer:/data
     networks:
       - internal
-      - overlay_public
+      - ${network_name}
     deploy:
       mode: replicated
       replicas: 1
@@ -20,7 +20,7 @@ services:
       labels:
         # traefik
         - traefik.enable=true
-        - traefik.docker.network=overlay_public
+        - traefik.docker.network=${network_name}
         - "traefik.http.services.portainer.loadbalancer.server.port=9000"
         # traefikv2
         - "traefik.http.routers.portainer.rule=Host(`portainer.${domain}`)"
@@ -43,7 +43,7 @@ services:
         constraints: [node.platform.os == linux]
 
 networks:
-  overlay_public:
+  ${network_name}:
     external: true
   internal:
     driver: overlay

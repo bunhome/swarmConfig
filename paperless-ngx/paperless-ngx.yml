@@ -34,9 +34,11 @@ services:
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     networks: 
-      - overlay_public
-    ports:
-      - "8010:8000"
+      - ${network_name}
+      - ${redis_network_name}
+      - ${db_network_name}
+    #ports:
+    #  - "8010:8000"
     volumes:
       - data:/usr/src/paperless/data
       - ${paperless_media_folder}:/usr/src/paperless/media
@@ -51,7 +53,7 @@ services:
       PAPERLESS_ADMIN_USER: admin
       PAPERLESS_ADMIN_PASSWORD_FILE: '/run/secrets/PAPERLESS_ADMIN_PASSWORD' 
       PAPERLESS_REDIS: redis://redis:6379/1
-      PAPERLESS_DBHOST: db
+      PAPERLESS_DBHOST: ${db_service_name}
       PAPERLESS_DBUSER: 'paperless'
       PAPERLESS_DBNAME: 'paperless'
       PAPERLESS_DBPASS_FILE: '/run/secrets/PAPERLESS_DB_SECRET'
@@ -75,10 +77,11 @@ services:
         - 'traefik.http.routers.paperless.tls.domains[0].main=${domain}'
         - 'traefik.http.routers.paperless.tls.domains[0].sans=*.${domain}'
         - 'traefik.http.routers.paperless.entrypoints=https,https-external'
+        # we trust paperless' build in login
+        #- "traefik.http.routers.paperless.middlewares=authelia@swarm"
 
 volumes:
   data:
-  redisdata:
 
 secrets:
   PAPERLESS_DB_SECRET:
@@ -91,5 +94,9 @@ secrets:
     external: true
 
 networks:
-  overlay_public:
+  ${network_name}:
+    external: true
+  ${redis_network_name}:
+    external: true
+  ${db_network_name}:
     external: true

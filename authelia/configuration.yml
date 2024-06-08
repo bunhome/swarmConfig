@@ -4,7 +4,8 @@ server:
   address: 'tcp://:9091'
 log:
   level: 'info'
-  file_path: '/runTime/logs/authelia.log'
+  #file_path: '/runTime/logs/authelia.log'
+  ## commented to stream logging to stdout so we can see it in docker logs ...
 totp:
   disable: false
   issuer: '{{ secret "/run/secrets/DOMAIN_NAME" }}'
@@ -18,7 +19,7 @@ authentication_backend:
   password_reset:
     disable: true
   file:
-    path: '/runTime/users_database.yml'
+    path: '/users_database.yml'
     watch: true
 password_policy:
   standard:
@@ -63,7 +64,7 @@ notifier:
 identity_providers:
   oidc:
     jwks:
-      - key_id: 'example'
+      - key_id: 'dhomelab'
         key: {{ secret "/run/secrets/AUTHELIA_OIDC_JWKS_KEY" | mindent 10 "|" | msquote }}
     authorization_policies:
       standard:
@@ -72,101 +73,108 @@ identity_providers:
          - policy: 'deny'
            subject: 'group:services'
     clients:
-      - client_id: 'immich'
-        client_name: 'immich'
-        client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_IMMICH_HASH" | mindent 10 "|" | msquote }} #hashed
-        public: false
-        authorization_policy: 'two_factor'
-        redirect_uris:
-          - 'https://photos.{{ secret "/run/secrets/DOMAIN_NAME" }}/auth/login'
-          - 'https://photos.{{ secret "/run/secrets/DOMAIN_NAME" }}/user-settings'
-          - 'app.immich:/'
-        scopes:
-          - 'openid'
-          - 'profile'
-          - 'email'
-        userinfo_signed_response_alg: 'none'
-      - client_id: 'homarr'
-        client_name: 'Homarr'
-        client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_HOMARR_HASH" | mindent 10 "|" | msquote }} #hashed
-        public: false
-        authorization_policy: 'two_factor'
-        redirect_uris:
-          - 'http://home.{{ secret "/run/secrets/DOMAIN_NAME" }}/api/auth/callback/oidc'
-        scopes:
-          - 'openid'
-          - 'profile'
-          - 'groups'
-          - 'email'
-        userinfo_signed_response_alg: 'none'
-        token_endpoint_auth_method: 'client_secret_basic'
+      # - client_id: 'immich'
+      #   client_name: 'immich'
+      #   client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_IMMICH_HASH" | mindent 10 "|" | msquote }} #hashed
+      #   public: false
+      #   authorization_policy: 'two_factor'
+      #   redirect_uris:
+      #     - 'https://photos.{{ secret "/run/secrets/DOMAIN_NAME" }}/auth/login'
+      #     - 'https://photos.{{ secret "/run/secrets/DOMAIN_NAME" }}/user-settings'
+      #     - 'app.immich:/'
+      #   scopes:
+      #     - 'openid'
+      #     - 'profile'
+      #     - 'email'
+      #   userinfo_signed_response_alg: 'none'
+      #   consent_mode: implicit # self hosted
+       #- client_id: 'homarr'
+        #client_name: 'Homarr'
+        #client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_HOMARR_HASH" | mindent 10 "|" | msquote }} #hashed
+        #public: false
+        #authorization_policy: 'two_factor'
+        #redirect_uris:
+        #  - 'http://home.{{ secret "/run/secrets/DOMAIN_NAME" }}/api/auth/callback/oidc'
+        #scopes:
+        #  - 'openid'
+        #  - 'profile'
+        #  - 'groups'
+        #  - 'email'
+        #userinfo_signed_response_alg: 'none'
+        #token_endpoint_auth_method: 'client_secret_basic'
         #consent_mode: implicit # self hosted
-      - client_id: 'jellyfin'
-        client_name: 'Jellyfin'
-        client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_JELLYFIN_HASH" | mindent 10 "|" | msquote }} #hashed
-        public: false
-        authorization_policy: 'two_factor'
-        require_pkce: true
-        pkce_challenge_method: 'S256'
-        redirect_uris:
-          - 'https://media.{{ secret "/run/secrets/DOMAIN_NAME" }}/sso/OID/redirect/authelia'
-        scopes:
-          - 'openid'
-          - 'profile'
-          - 'groups'
-        userinfo_signed_response_alg: 'none'
-        token_endpoint_auth_method: 'client_secret_post'
-      - client_id: 'paperless'
-        client_name: 'Paperless'
-        client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_PAPERLESS_HASH" | mindent 10 "|" | msquote }} #hashed
-        public: false
-        authorization_policy: 'two_factor'
-        require_pkce: true
-        pkce_challenge_method: 'S256'
-        redirect_uris:
-          - 'https://docs.{{ secret "/run/secrets/DOMAIN_NAME" }}/accounts/oidc/authelia/login/callback/'
-        scopes:
-          - 'openid'
-          - 'profile'
-          - 'email'
-          - 'groups'
-        userinfo_signed_response_alg: 'none'
-        token_endpoint_auth_method: 'client_secret_basic'
-      - client_id: 'portainer'
-        client_name: 'Portainer'
-        client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_PORTAINER_HASH" | mindent 10 "|" | msquote }} #hashed
-        public: false
-        authorization_policy: 'two_factor'
-        redirect_uris:
-          - 'https://portainer.{{ secret "/run/secrets/DOMAIN_NAME" }}'
-        scopes:
-          - 'openid'
-          - 'profile'
-          - 'groups'
-          - 'email'
-        userinfo_signed_response_alg: 'none'
-      - client_id: 'seafile'
-        client_name: 'Seafile'
-        client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_SEAFILE_HASH" | mindent 10 "|" | msquote }} #hashed
-        public: false
-        authorization_policy: 'two_factor'
-        redirect_uris:
-          - 'https://files.{{ secret "/run/secrets/DOMAIN_NAME" }}/oauth/callback/'
-        scopes:
-          - 'openid'
-          - 'profile'
-          - 'email'
-        userinfo_signed_response_alg: 'none'
-        token_endpoint_auth_method: 'client_secret_basic'
-      - client_id: 'cloudflare'
-        client_name: 'Cloudflare ZeroTrust'
-        client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_CLOUDFLARE_HASH" | mindent 10 "|" | msquote }} #hashed
-        public: false
-        authorization_policy: 'two_factor'
-        redirect_uris:
-          - 'https://dmaier.cloudflareaccess.com/cdn-cgi/access/callback'
-        scopes:
-          - 'openid'
-          - 'profile'
-          - 'email'
-        userinfo_signed_response_alg: 'none'
+      # - client_id: 'jellyfin'
+      #   client_name: 'Jellyfin'
+      #   client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_JELLYFIN_HASH" | mindent 10 "|" | msquote }} #hashed
+      #   public: false
+      #   authorization_policy: 'two_factor'
+      #   require_pkce: true
+      #   pkce_challenge_method: 'S256'
+      #   redirect_uris:
+      #     - 'https://media.{{ secret "/run/secrets/DOMAIN_NAME" }}/sso/OID/redirect/authelia'
+      #   scopes:
+      #     - 'openid'
+      #     - 'profile'
+      #     - 'groups'
+      #   userinfo_signed_response_alg: 'none'
+      #   token_endpoint_auth_method: 'client_secret_post'
+      #   consent_mode: implicit # self hosted
+      # - client_id: 'paperless'
+      #   client_name: 'Paperless'
+      #   client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_PAPERLESS_HASH" | mindent 10 "|" | msquote }} #hashed
+      #   public: false
+      #   authorization_policy: 'two_factor'
+      #   require_pkce: true
+      #   pkce_challenge_method: 'S256'
+      #   redirect_uris:
+      #     - 'https://docs.{{ secret "/run/secrets/DOMAIN_NAME" }}/accounts/oidc/authelia/login/callback/'
+      #   scopes:
+      #     - 'openid'
+      #     - 'profile'
+      #     - 'email'
+      #     - 'groups'
+      #   userinfo_signed_response_alg: 'none'
+      #   token_endpoint_auth_method: 'client_secret_basic'
+      #   consent_mode: implicit # self hosted
+      # - client_id: 'portainer'
+      #   client_name: 'Portainer'
+      #   client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_PORTAINER_HASH" | mindent 10 "|" | msquote }} #hashed
+      #   public: false
+      #   authorization_policy: 'two_factor'
+      #   redirect_uris:
+      #     - 'https://portainer.{{ secret "/run/secrets/DOMAIN_NAME" }}'
+      #   scopes:
+      #     - 'openid'
+      #     - 'profile'
+      #     - 'groups'
+      #     - 'email'
+      #   userinfo_signed_response_alg: 'none'
+      #   consent_mode: implicit # self hosted
+      # - client_id: 'seafile'
+      #   client_name: 'Seafile'
+      #   client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_SEAFILE_HASH" | mindent 10 "|" | msquote }} #hashed
+      #   public: false
+      #   authorization_policy: 'two_factor'
+      #   redirect_uris:
+      #     - 'https://files.{{ secret "/run/secrets/DOMAIN_NAME" }}/oauth/callback/'
+      #   scopes:
+      #     - 'openid'
+      #     - 'profile'
+      #     - 'email'
+      #   userinfo_signed_response_alg: 'none'
+      #   token_endpoint_auth_method: 'client_secret_basic'
+      #   consent_mode: implicit # self hosted
+      # - client_id: 'cloudflare'
+      #   client_name: 'Cloudflare ZeroTrust'
+      #   client_secret: {{ secret "/run/secrets/AUTHELIA_OIDC_CLOUDFLARE_HASH" | mindent 10 "|" | msquote }} #hashed
+      #   public: false
+      #   authorization_policy: 'two_factor'
+      #   redirect_uris:
+      #     - 'https://dmaier.cloudflareaccess.com/cdn-cgi/access/callback'
+      #   scopes:
+      #     - 'openid'
+      #     - 'profile'
+      #     - 'email'
+      #     - 'groups'
+      #   userinfo_signed_response_alg: 'none'
+      #   consent_mode: implicit # self hosted

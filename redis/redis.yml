@@ -4,9 +4,9 @@ services:
   redis:
     image: redis:alpine
     volumes:
-      - /var/data/redis:/data
+      - data:/data
     networks:
-      - overlay_public
+      - ${redis_network_name}
     expose:
       - 6379
     restart: unless-stopped
@@ -17,7 +17,10 @@ services:
          - "traefik.enable=false"
 
 networks:
-  # Use the previously created public network "overlay_public", shared with other
+  # Use the previously created public network "${redis_network_name}", shared with other
   # services that need to be publicly available via this Traefik
-  overlay_public:
+  ${redis_network_name}:
     external: true
+
+volume:
+  data:

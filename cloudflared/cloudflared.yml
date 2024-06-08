@@ -3,7 +3,7 @@ secrets:
     external: true
 
 networks:
-  overlay_public:
+  ${network_name}:
     external: true
 
 services:
@@ -17,4 +17,4 @@ services:
       labels:
         - 'traefik.enable=false'
     networks:
-      - overlay_public
+      - ${network_name}

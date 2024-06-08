@@ -3,7 +3,9 @@ services:
   authelia:
     image: 'docker.io/authelia/authelia:latest'
     networks:
-      - overlay_public
+      - ${network_name}
+      - ${redis_network_name}
+      - ${db_network_name}
     environment:
       X_AUTHELIA_CONFIG_FILTERS: 'template'
       AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: '/run/secrets/AUTHELIA_JWT_SECRET'
@@ -13,8 +15,6 @@ services:
       AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: '/run/secrets/AUTHELIA_STORAGE_ENCRYPTION_KEY'
       AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE: '/run/secrets/AUTHELIA_OIDC_HMAC'
       TZ: 'Europe/Berlin'
-    volumes:
-      - 'authelia_log:/runTime/logs/'
     secrets: 
       - 'DOMAIN_NAME'
       - 'ADMIN_MAIL'
@@ -36,7 +36,7 @@ services:
       - source: authelia_config
         target: /config/configuration.yml
       - source: authelia_users
-        target: /runTime/users_database.yml
+        target: /users_database.yml
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -49,13 +49,11 @@ services:
         - 'traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'  
 
 networks:
-  # Use the previously created public network "overlay_public", shared with other
+  # Use the previously created public network "${network_name}", shared with other
   # services that need to be publicly available via this Traefik
-  overlay_public:
+  ${network_name}:
     external: true
-
-volumes:
-  authelia_log:
+  ${db_network_name}:
 
 secrets:
   DOMAIN_NAME:

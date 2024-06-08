@@ -14,7 +14,7 @@ services:
       # Enable Docker Swarm mode
       - --providers.swarm.endpoint=unix:///var/run/docker.sock
       - --providers.swarm.exposedbydefault=false
-      - --providers.swarm.network=overlay_public
+      - --providers.swarm.network=${network_name}
 
       # Create an entrypoint "http" listening on port 80
       - --entrypoints.http.address=:80
@@ -68,7 +68,7 @@ services:
         constraints:
           # Make the traefik service run only on the node with this label
           # as the node with it has the volume for the certificates
-          #- node.labels.overlay_public.overlay_public-certificates == true
+          #- node.labels.${network_name}.overlay_public-certificates == true
           - node.role == manager
     secrets:
       - CF_DNS_API_TOKEN
@@ -83,7 +83,7 @@ services:
     networks:
       # Use the public network created to be shared between Traefik and
       # any other service that needs to be publicly available with HTTPS
-      - overlay_public
+      - ${network_name}
 
 
 volumes:
@@ -93,9 +93,9 @@ volumes:
   overlay_public-certificates:
 
 networks:
-  # Use the previously created public network "overlay_public", shared with other
+  # Use the previously created public network "${network_name}", shared with other
   # services that need to be publicly available via this Traefik
-  overlay_public:
+  ${network_name}:
     external: true
 
 secrets:

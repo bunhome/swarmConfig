@@ -2,7 +2,7 @@ services:
   testpage_external:
     image: traefik/whoami
     networks:
-      - overlay_public
+      - ${network_name}
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -16,7 +16,7 @@ services:
   testpage_internal:
     image: traefik/whoami
     networks:
-      - overlay_public
+      - ${network_name}
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -28,5 +28,5 @@ services:
     restart: unless-stopped
 
 networks:
-  overlay_public:
+  ${network_name}:
     external: true

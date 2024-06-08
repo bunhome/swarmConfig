@@ -11,7 +11,7 @@ services:
       - /var/data/homarr/icons:/app/public/icons
       - /var/data/homarr/data:/data
     networks:
-      - overlay_public
+      - ${network_name}
     environment:
       - 'BASE_URL=home.${domain}'
       - 'TZ=Europe/Berlin'
@@ -23,13 +23,13 @@ services:
       - 'AUTH_OIDC_CLIENT_ID=homarr'
       - 'AUTH_OIDC_CLIENT_NAME=Authelia'
       #- 'AUTH_LOGOUT_REDIRECT_URL=https://auth.${domain}'
-    ports:
-      - '7575:7575'
+    #ports:
+    #  - '7575:7575'
     deploy:
       labels:
         # traefik
         - traefik.enable=true
-        - traefik.docker.network=overlay_public
+        - traefik.docker.network=${network_name}
         - "traefik.http.services.homarr.loadbalancer.server.port=7575"
         # traefikv2
         - "traefik.http.routers.homarr.rule=Host(`home.${domain}`)"
@@ -44,5 +44,5 @@ secrets:
     external: true
 
 networks:
-  overlay_public:
+  ${network_name}:
     external: true

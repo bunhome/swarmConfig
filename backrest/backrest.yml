@@ -4,9 +4,9 @@ services:
     image: garethgeorge/backrest
     container_name: backrest 
     volumes:
-      - /var/data/backrest/data:/data
-      - /var/data/backrest/config:/config
-      - /var/data/backrest/cache:/cache
+      - backrest_data:/data
+      - backrest_config:/config
+      - backrest_cache:/cache
       - ${home_folder}/:/userdata # mount your directories to backup somewhere in the filesystem
     environment:
       - BACKREST_DATA=/data # path for backrest data. restic binary and the database are placed here.
@@ -23,14 +23,18 @@ services:
         - "traefik.http.routers.backup.entrypoints=https"
         - "traefik.http.routers.backup.tls=true"
         - "traefik.http.services.backup.loadbalancer.server.port=9898"
-        # uncomment if you want to protect portainer with traefik-forward-auth using traefikv2
-        # - "traefik.http.routers.portainer.middlewares=forward-auth"    
+        - "traefik.http.routers.backup.middlewares=authelia@swarm"    
     networks:
-      - overlay_public
+      - ${network_name}
     ports:
       - "9898:9898"
 
 networks:
-  overlay_public:
+  ${network_name}:
     external: true
+
+volumes:
+  backrest_data:
+  backrest_config:
+  backrest_cache:
 

@@ -11,13 +11,13 @@ services:
     deploy: 
       replicas: 0
     networks:
-      - public
+      - ${network_name}
 
 networks:
-  public:
+  ${network_name}:
     driver: overlay
     attachable: true
     ipam:
       config:
-        - subnet: 172.16.200.0/24
+        - subnet: ${subnet} #172.16.200.0/24
 

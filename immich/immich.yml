@@ -14,11 +14,13 @@ services:
       - 'DB_USERNAME=postgres'
       - 'DB_PASSWORD=postgres'
       - 'DB_DATABASE_NAME=immich'
-    ports:
-      - 2283:3001
+      - 'REDIS_DBINDEX=2'
+    #ports:
+    #  - 2283:3001
     networks:
-      - overlay_public
-      - immich_private
+      - ${network_name}
+      - ${redis_network_name}
+      - internal
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -29,20 +31,24 @@ services:
         - 'traefik.http.routers.immich.tls.domains[0].main=${domain}'
         - 'traefik.http.routers.immich.tls.domains[0].sans=*.${domain}'
         - 'traefik.http.routers.immich.entrypoints=https,https-external'
+        # we trust immichs own login screen
+        #- "traefik.http.routers.immich.middlewares=authelia@swarm"
 
   immich-microservices:
     image: ghcr.io/immich-app/immich-server:release
     command: ['start.sh', 'microservices']
     volumes:
-      - ${home_folder}media/pictures:/usr/src/app/upload
+      - ${home_folder}/media/pictures:/usr/src/app/upload
     environment:
       - 'TZ=Europe/Berlin'
       - 'LOG_LEVEL=verbose'
       - 'DB_USERNAME=postgres'
       - 'DB_PASSWORD=postgres'
       - 'DB_DATABASE_NAME=immich'
+      - 'REDIS_DBINDEX=2'
     networks:
-      - immich_private
+      - internal
+      - ${redis_network_name}
 
   immich-machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:release
@@ -51,12 +57,12 @@ services:
     environment:
       - 'TZ=Europe/Berlin'
     networks:
-      - immich_private
+      - internal
 
-  redis:
-    image: registry.hub.docker.com/library/redis:6.2-alpine@sha256:84882e87b54734154586e5f8abd4dce69fe7311315e2fc6d67c29614c8de2672
-    networks:
-      - immich_private
+  # redis:
+  #   image: registry.hub.docker.com/library/redis:6.2-alpine@sha256:84882e87b54734154586e5f8abd4dce69fe7311315e2fc6d67c29614c8de2672
+  #   networks:
+  #     - internal
 
   database:
     image: registry.hub.docker.com/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:90724186f0a3517cf6914295b5ab410db9ce23190a2d9d0b9dd6463e3fa298f0
@@ -66,16 +72,18 @@ services:
       POSTGRES_DB: immich
       POSTGRES_INITDB_ARGS: '--data-checksums'
     volumes:
-      - /var/data/immich/database:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
     networks:
-      - immich_private
+      - internal
     command: ["postgres", "-c" ,"shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
 
 
 networks:
-  overlay_public:
+  ${network_name}:
     external: true
-  immich_private:
+  ${redis_network_name}:
+    external: true
+  internal:
     driver: overlay
     ipam:
       config:
@@ -83,3 +91,4 @@ networks:
 
 volumes:
   model-cache:
+  db_data:
