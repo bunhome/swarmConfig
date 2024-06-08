@@ -5,7 +5,7 @@ services:
     image: postgres
     restart: always
     networks:
-      - db_network
+      - overlay
     # set shared memory limit when deploy via swarm stack
     volumes:
       - data:/var/lib/postgresql/data
@@ -18,11 +18,15 @@ services:
         - "traefik.enable=false"
 
 networks:
-  # Use the previously created public network "db_network", shared with other
+  # Use the previously created public network "overlay", shared with other
   # services that need to be publicly available via this Traefik
-  db_network:
-    name: ${db_network_name}
-    external: true
+  overlay:
+    driver: overlay
+    internal: true
+    attachable: true
+    ipam:
+      config:
+        - subnet: ${subnet} #172.16.200.0/24
 
 volumes:
   data:

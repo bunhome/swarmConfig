@@ -268,9 +268,9 @@
             },
             "env": [
                 {
-                    "name": "db_network_name",
-                    "label": "Name of the main network",
-                    "default": "overlay_public"
+                    "name": "subnet",
+                    "label": "Subnet IDv4 Range",
+                    "default": "172.16.13.0/24"
                 }
             ]
         },
@@ -292,9 +292,9 @@
             },
             "env": [
                 {
-                    "name": "redis_network_name",
-                    "label": "Name of the main network",
-                    "default": "overlay_public"
+                    "name": "subnet",
+                    "label": "Subnet IDv4 Range",
+                    "default": "172.16.2.0/24"
                 }
             ]
         },

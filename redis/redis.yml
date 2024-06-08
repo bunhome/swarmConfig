@@ -6,7 +6,7 @@ services:
     volumes:
       - data:/data
     networks:
-      - redis_network
+      - overlay
     expose:
       - 6379
     restart: unless-stopped
@@ -17,8 +17,13 @@ services:
          - "traefik.enable=false"
 
 networks:
-  redis_network:
-    name: ${redis_network_name}
+  overlay:
+    driver: overlay
+    internal: true
+    attachable: true
+    ipam:
+      config:
+        - subnet: ${subnet} #172.16.200.0/24
 
 volume:
   data:
