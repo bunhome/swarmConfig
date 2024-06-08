@@ -461,7 +461,7 @@
             "type": 2,
             "title": "Jellyfin",
             "name": "jellyfin",
-            "logo": "https://raw.githubusercontent.com/rapiz1/rathole/main/docs/img/rathole-logo.png",
+            "logo": "https://jellyfin.org/images/logo.svg",
             "description": "Jellyfin Video Streaming server",
             "note": "Overlay network must be deployed first!",
             "categories": [
@@ -484,6 +484,11 @@
                     "name": "home_folder",
                     "label": "base folder containing the media",
                     "default": "/home/USER"
+                },
+                {
+                    "name": "AutoDiscover_HomeServer_Response",
+                    "label": "IP of Homeserver in private Network for Autodiscovery of Server/Client",
+                    "default": "111.111.111.111"
                 }
             ]
         }

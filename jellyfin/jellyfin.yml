@@ -2,16 +2,17 @@ version: "3.9"
 
 services:
   jellyfin:
-    image: jellyfin/jellyfin
-    env_file: /var/data/config/jellyfin/jellyfin.env
+    image: lscr.io/linuxserver/jellyfin:latest
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - config:/config
-      - cache:/cache
-      - ${home_folder}/media/entertainment:/data
+      - ${home_folder}/media/entertainment/lib:/config
+      - ${home_folder}/media/entertainment/tvshows:/data/tvshows
+      - ${home_folder}/media/entertainment/movies:/data/movies
     environment:
       - PUID: 1000
       - GUID: 1000
+      - 'TZ=Europe/Berlin'
+      - 'DOCKER_MODS=linuxserver/mods:jellyfin-opencl-intel'
+      - 'JELLYFIN_PublishedServerUrl=${AutoDiscover_HomeServer_Response}'
     deploy:
       labels:
         - "traefik.enable=true"
@@ -24,8 +25,9 @@ services:
         - 'traefik.http.routers.jellyfin.entrypoints=https,https-external'
     networks:
         - defaultNetwork
-    #ports:
-    #  - 8096:8096
+    ports:
+      - 7359:7359/udp #optional
+      - 1900:1900/udp #optional
 
 networks:
   defaultNetwork:
