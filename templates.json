@@ -423,6 +423,29 @@
                     "default": "/home/USER"
                 }
             ]
+        },
+        {
+            "type": 2,
+            "title": "Rathole Tunnel",
+            "name": "rathole",
+            "logo": "https://raw.githubusercontent.com/rapiz1/rathole/main/docs/img/rathole-logo.png",
+            "description": "Adds tunnel client in order to reach services from another server. Alternative to cloudflare when using a bastion server with rathole server.",
+            "note": "Overlay network and secrets (RATHOLE_DEFAULT_TOKEN, RATHOLE_CONNECTION_PORT, RATHOLE_ADDRESS) and config (rathole_config_toml) must be deployed first!",
+            "categories": [
+                "TUNNEL"
+            ],
+            "platform": "linux",
+            "repository": {
+                "url": "https://github.com/bunhome/swarmConfig.git",
+                "stackfile": "rathole/rathole.yml"
+            },
+            "env": [
+                {
+                    "name": "network_name",
+                    "label": "Name of the main network",
+                    "default": "overlay_public"
+                }
+            ]
         }
     ]
 }
