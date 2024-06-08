@@ -39,7 +39,7 @@
             "note": "traefik and overlay must be deployed first, needs redis container deployed, needs db container and a paperless user+password+db",
             "categories": [
                 "documents",
-                "media",
+                "Media",
                 "Organizing"
             ],
             "platform": "linux",
@@ -454,6 +454,36 @@
                     "name": "network_name",
                     "label": "Name of the main network",
                     "default": "overlay_public"
+                }
+            ]
+        },
+        {
+            "type": 2,
+            "title": "Jellyfin",
+            "name": "jellyfin",
+            "logo": "https://raw.githubusercontent.com/rapiz1/rathole/main/docs/img/rathole-logo.png",
+            "description": "Jellyfin Video Streaming server",
+            "note": "Overlay network must be deployed first!",
+            "categories": [
+                "Movies",
+                "Entertainment",
+                "Media"
+            ],
+            "platform": "linux",
+            "repository": {
+                "url": "https://github.com/bunhome/swarmConfig.git",
+                "stackfile": "jellyfin/jellyfin.yml"
+            },
+            "env": [
+                {
+                    "name": "network_name",
+                    "label": "Name of the main network",
+                    "default": "overlay_public"
+                },
+                {
+                    "name": "home_folder",
+                    "label": "base folder containing the media",
+                    "default": "/home/USER"
                 }
             ]
         }
