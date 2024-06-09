@@ -50,8 +50,8 @@ services:
       - PAPERLESS_ADMIN_PASSWORD
       - PAPERLESS_OIDC_PROVIDER
     environment:
-      PAPERLESS_ADMIN_USER: admin_auto
-      PAPERLESS_ADMIN_PASSWORD_FILE: '/run/secrets/PAPERLESS_ADMIN_PASSWORD' 
+      #PAPERLESS_ADMIN_USER: admin_auto
+      #PAPERLESS_ADMIN_PASSWORD_FILE: '/run/secrets/PAPERLESS_ADMIN_PASSWORD' 
       PAPERLESS_REDIS: redis://redis:6379/1
       PAPERLESS_DBHOST: ${db_service_name}
       PAPERLESS_DBUSER: 'paperless'
