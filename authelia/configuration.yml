@@ -4,7 +4,8 @@ server:
   address: 'tcp://:9091'
 log:
   level: 'info'
-  #file_path: '/runTime/logs/authelia.log'
+  file_path: '/config/authelia.log'
+  keep_stdout: true
   ## commented to stream logging to stdout so we can see it in docker logs ...
 totp:
   disable: false
@@ -112,6 +113,7 @@ identity_providers:
       #   pkce_challenge_method: 'S256'
       #   redirect_uris:
       #     - 'https://media.{{ secret "/run/secrets/DOMAIN_NAME" }}/sso/OID/redirect/authelia'
+      #     - 'https://media.{{ secret "/run/secrets/DOMAIN_NAME" }}/sso/OID/r/authelia'
       #   scopes:
       #     - 'openid'
       #     - 'profile'
