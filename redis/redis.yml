@@ -25,5 +25,5 @@ networks:
       config:
         - subnet: ${subnet} #172.16.200.0/24
 
-volume:
+volumes:
   data:
