@@ -1,20 +1,20 @@
-version: '3.9'
+version: "3.9"
 
 services:
   immich-server:
     image: ghcr.io/immich-app/immich-server:release
-    command: 
-      - 'start.sh' 
-      - 'immich'
+    command:
+      - "start.sh"
+      - "immich"
     volumes:
-      - ${home_folder}/media/pictures:/usr/src/app/upload
+      - pictures:/usr/src/app/upload
     environment:
-      - 'TZ=Europe/Berlin'
-      - 'LOG_LEVEL=verbose'
-      - 'DB_USERNAME=postgres'
-      - 'DB_PASSWORD=postgres'
-      - 'DB_DATABASE_NAME=immich'
-      - 'REDIS_DBINDEX=2'
+      - "TZ=Europe/Berlin"
+      - "LOG_LEVEL=verbose"
+      - "DB_USERNAME=postgres"
+      - "DB_PASSWORD=postgres"
+      - "DB_DATABASE_NAME=immich"
+      - "REDIS_DBINDEX=2"
     #ports:
     #  - 2283:3001
     networks:
@@ -23,29 +23,29 @@ services:
       - internal
     deploy:
       labels:
-        - 'traefik.enable=true'
-        - 'traefik.http.services.immich.loadbalancer.server.port=3001'
-        - 'traefik.http.routers.immich.rule=Host(`photos.${domain}`)'
-        - 'traefik.http.routers.immich.tls=true'
-        - 'traefik.http.routers.immich.tls.certresolver=cloudflare'
-        - 'traefik.http.routers.immich.tls.domains[0].main=${domain}'
-        - 'traefik.http.routers.immich.tls.domains[0].sans=*.${domain}'
-        - 'traefik.http.routers.immich.entrypoints=https,https-external'
+        - "traefik.enable=true"
+        - "traefik.http.services.immich.loadbalancer.server.port=3001"
+        - "traefik.http.routers.immich.rule=Host(`photos.${domain}`)"
+        - "traefik.http.routers.immich.tls=true"
+        - "traefik.http.routers.immich.tls.certresolver=cloudflare"
+        - "traefik.http.routers.immich.tls.domains[0].main=${domain}"
+        - "traefik.http.routers.immich.tls.domains[0].sans=*.${domain}"
+        - "traefik.http.routers.immich.entrypoints=https,https-external"
         # we trust immichs own login screen
         #- "traefik.http.routers.immich.middlewares=authelia@swarm"
 
   immich-microservices:
     image: ghcr.io/immich-app/immich-server:release
-    command: ['start.sh', 'microservices']
+    command: ["start.sh", "microservices"]
     volumes:
-      - ${home_folder}/media/pictures:/usr/src/app/upload
+      - pictures:/usr/src/app/upload
     environment:
-      - 'TZ=Europe/Berlin'
-      - 'LOG_LEVEL=verbose'
-      - 'DB_USERNAME=postgres'
-      - 'DB_PASSWORD=postgres'
-      - 'DB_DATABASE_NAME=immich'
-      - 'REDIS_DBINDEX=2'
+      - "TZ=Europe/Berlin"
+      - "LOG_LEVEL=verbose"
+      - "DB_USERNAME=postgres"
+      - "DB_PASSWORD=postgres"
+      - "DB_DATABASE_NAME=immich"
+      - "REDIS_DBINDEX=2"
     networks:
       - internal
       - redis_network
@@ -55,7 +55,7 @@ services:
     volumes:
       - model-cache:/cache
     environment:
-      - 'TZ=Europe/Berlin'
+      - "TZ=Europe/Berlin"
     networks:
       - internal
 
@@ -70,13 +70,27 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: immich
-      POSTGRES_INITDB_ARGS: '--data-checksums'
+      POSTGRES_INITDB_ARGS: "--data-checksums"
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
       - internal
-    command: ["postgres", "-c" ,"shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
-
+    command:
+      [
+        "postgres",
+        "-c",
+        "shared_preload_libraries=vectors.so",
+        "-c",
+        'search_path="$$user", public, vectors',
+        "-c",
+        "logging_collector=on",
+        "-c",
+        "max_wal_size=2GB",
+        "-c",
+        "shared_buffers=512MB",
+        "-c",
+        "wal_compression=on",
+      ]
 
 networks:
   defaultNetwork:
@@ -93,5 +107,21 @@ networks:
         - subnet: 172.16.8.0/24
 
 volumes:
+  pictures:
+    driver: linstor
+    driver_opts:
+      size: "${picture_storage_size}"
+      filesystem: "ext4"
+      storagepool: linstor_docker
   model-cache:
+    driver: linstor
+    driver_opts:
+      size: "${cache_size}"
+      filesystem: "ext4"
+      storagepool: linstor_docker
   db_data:
+    driver: linstor
+    driver_opts:
+      size: "${db_storage_size}"
+      filesystem: "ext4"
+      storagepool: linstor_docker

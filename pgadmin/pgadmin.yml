@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   pgadmin:
@@ -6,22 +6,22 @@ services:
     #ports:
     #  - "8888:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: '${admin_mail}'
-      PGADMIN_DEFAULT_PASSWORD_FILE: '/run/secrets/PGADMIN_DEFAULT_PASSWORD'
+      PGADMIN_DEFAULT_EMAIL: "${admin_mail}"
+      PGADMIN_DEFAULT_PASSWORD_FILE: "/run/secrets/PGADMIN_DEFAULT_PASSWORD"
     secrets:
       - PGADMIN_DEFAULT_PASSWORD
     volumes:
-      - 'data:/var/lib/pgadmin'
+      - "data:/var/lib/pgadmin"
     networks:
       - defaultNetwork
       - dbNetwork
     deploy:
       labels:
-        - 'traefik.enable=true'
-        - 'traefik.http.routers.pgadmin.entrypoints=https'
-        - 'traefik.http.routers.pgadmin.rule=Host(`pgadmin.${domain}`)'
-        - 'traefik.http.routers.pgadmin.tls=true'
-        - 'traefik.http.services.pgadmin.loadbalancer.server.port=80'
+        - "traefik.enable=true"
+        - "traefik.http.routers.pgadmin.entrypoints=https"
+        - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.${domain}`)"
+        - "traefik.http.routers.pgadmin.tls=true"
+        - "traefik.http.services.pgadmin.loadbalancer.server.port=80"
         - "traefik.http.routers.pgadmin.middlewares=authelia@swarm"
 
 secrets:
@@ -38,3 +38,8 @@ networks:
 
 volumes:
   data:
+    driver: linstor
+    driver_opts:
+      size: "${storage_size}"
+      filesystem: "ext4"
+      storagepool: linstor_docker

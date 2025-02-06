@@ -1,10 +1,15 @@
-version: '3.9'
+version: "3.9"
 
 volumes:
   # Create a volume to store the certificates, there is a constraint to make sure
   # Traefik is always deployed to the same Docker node with the same volume containing
   # the HTTPS certificates
   overlay_public-certificates:
+    driver: linstor
+    driver_opts:
+      size: "200M"
+      filesystem: "ext4"
+      storagepool: linstor_docker
 
 networks:
   # Use the previously created public network "defaultNetwork", shared with other
@@ -12,7 +17,7 @@ networks:
   defaultNetwork:
     name: ${network_name:?err}
     external: true
-    
+
 secrets:
   CF_DNS_API_TOKEN:
     external: true
@@ -48,14 +53,14 @@ services:
       # Create an entrypoint "https-external" listening on port 443
       - --entrypoints.https-external.address=:4430
       #- --entrypoints.https-external.middlewares=authelia@swarm
-      
+
       # Create the certificate resolver
       - --certificatesresolvers.cloudflare.acme.email=${ACME_MAIL:?err}
       - --certificatesresolvers.cloudflare.acme.storage=/certificates/acme.json
       - --certificatesresolvers.cloudflare.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
       - --certificatesresolvers.cloudflare.acme.dnsChallenge.provider=cloudflare
       - --certificatesresolvers.cloudflare.acme.dnsChallenge.resolvers=1.1.1.1:53
-      
+
       # Enable the access log, with HTTP requests
       - --accesslog
       # Enable the Traefik log, for configurations and errors
@@ -89,7 +94,7 @@ services:
     secrets:
       - CF_DNS_API_TOKEN
     environment:
-      CF_DNS_API_TOKEN_FILE: '/run/secrets/CF_DNS_API_TOKEN'
+      CF_DNS_API_TOKEN_FILE: "/run/secrets/CF_DNS_API_TOKEN"
       TZ: Europe/Berlin
     volumes:
       # Add Docker as a mounted volume, so that Traefik can read the labels of other services
@@ -100,4 +105,3 @@ services:
       # Use the public network created to be shared between Traefik and
       # any other service that needs to be publicly available with HTTPS
       - defaultNetwork
-

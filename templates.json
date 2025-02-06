@@ -1,496 +1,453 @@
 {
-    "version": "2",
-    "templates": [
+  "version": "2",
+  "templates": [
+    {
+      "type": 2,
+      "title": "Testpages",
+      "name": "testpages",
+      "logo": "https://imgs.search.brave.com/Z4_FoAh0ODYw1C42fBMvf40Miy-5uWqkKpLpreCLyBs/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3RpL2dyYXRp/cy12ZWt0b3IvcDEv/NDIzNjU0LWV4cGVy/aW1lbnQtc3ltYm9s/LWtvc3Rlbmxvcy12/ZWt0b3IuanBn",
+      "description": "adds testpages for internal-only and external-only to test your settings",
+      "note": "traefik and overlay must be deployed first",
+      "categories": ["testing", "Network"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "test/test.yml"
+      },
+      "env": [
         {
-            "type": 2,
-            "title": "Testpages",
-            "name": "testpages",
-            "logo": "https://imgs.search.brave.com/Z4_FoAh0ODYw1C42fBMvf40Miy-5uWqkKpLpreCLyBs/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3RpL2dyYXRp/cy12ZWt0b3IvcDEv/NDIzNjU0LWV4cGVy/aW1lbnQtc3ltYm9s/LWtvc3Rlbmxvcy12/ZWt0b3IuanBn",
-            "description": "adds testpages for internal-only and external-only to test your settings",
-            "note": "traefik and overlay must be deployed first",
-            "categories": [
-                "testing",
-                "Network"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "test/test.yml"
-            },
-            "env": [
-                {
-                    "name": "domain",
-                    "label": "Top level domain",
-                    "default": "example.com"
-                },
-                {
-                    "name": "network_name",
-                    "label": "on which network is this running?",
-                    "default": "overlay_public"
-                }
-            ]
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
         },
         {
-            "type": 2,
-            "title": "Paperless-ngx",
-            "name": "paperless",
-            "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/paperless.png",
-            "description": "",
-            "note": "traefik and overlay must be deployed first, needs redis container deployed, needs db container and a paperless user+password+db",
-            "categories": [
-                "documents",
-                "Media",
-                "Organizing"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "paperless-ngx/paperless-ngx.yml"
-            },
-            "env": [
-                {
-                    "name": "domain",
-                    "label": "Top level domain",
-                    "default": "example.com"
-                },
-                {
-                    "name": "network_name",
-                    "label": "on which network is this running?",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "redis_network_name",
-                    "label": "on which network is redis running?",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "db_network_name",
-                    "label": "on which network is ther DB running?",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "paperless_media_folder",
-                    "label": "Media Folder",
-                    "description": "Where paperless puts its media. Folder must be ready!",
-                    "default": "/home/user/documents/media"
-                },
-                {
-                    "name": "paperless_export_folder",
-                    "label": "Export Folder",
-                    "description": "Where paperless exports data. Folder must be ready!",
-                    "default": "/home/user/documents/export"
-                },
-                {
-                    "name": "paperless_import_folder",
-                    "label": "Import Folder",
-                    "description": "Where paperless imports data from. Folder must be ready!",
-                    "default": "/home/user/documents/import"
-                },
-                {
-                    "name": "db_service_name",
-                    "label": "Name of the DB service to use",
-                    "default": "db"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "5. Authelia",
-            "name": "authelia",
-            "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/authelia.png",
-            "description": "Adds the authelia middleware with sso",
-            "note": "Overlay Network and Traefik, Redis and DB must be deployed first. \n        Following Secrets must be defined  \n       - DOMAIN_NAME \n       - ADMIN_MAIL \n       - AUTHELIA_JWT_SECRET- should be super safe! \n       - AUTHELIA_SESSION_SECRET - should be super safe! \n       - AUTHELIA_STORAGE_POSTGRES_PASSWORD \n       - AUTHELIA_NOTIFIER_SMTP_PASSWORD - get from mail provider! \n       - AUTHELIA_STORAGE_ENCRYPTION_KEY \n       - AUTHELIA_OIDC_HMAC \n       - AUTHELIA_OIDC_JWKS_KEY \n       - AUTHELIA_OIDC_IMMICH_HASH \n       - AUTHELIA_OIDC_HOMARR_HASH \n       - AUTHELIA_OIDC_JELLYFIN_HASH \n       - AUTHELIA_OIDC_PAPERLESS_HASH \n       - AUTHELIA_OIDC_PORTAINER_HASH \n       - AUTHELIA_OIDC_SEAFILE_HASH \n        The following configs must be defined \n       - authelia_config from https://raw.githubusercontent.com/bunhome/swarmConfig/master/authelia/configuration.yml \n       - authelia_user - This is the user database as in the documentation",
-            "categories": [
-                "BASIC",
-                "FOUNDATION",
-                "MUST-INSTALL"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "authelia/authelia.yml"
-            },
-            "env": [
-                {
-                    "name": "domain",
-                    "label": "Top level domain",
-                    "default": "example.com"
-                },
-                {
-                    "name": "network_name",
-                    "label": "on which network is this running?",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "redis_network_name",
-                    "label": "on which network is redis running?",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "db_network_name",
-                    "label": "on which network is the DB running?",
-                    "default": "overlay_public"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "2. Traefik",
-            "name": "traefik",
-            "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/traefik.png",
-            "description": "Adds traefik reverse proxy with dns challenge from cloudflare and authelia middleware",
-            "note": "Overlay network and secret CF_DNS_API_TOKEN must be deployed first!",
-            "categories": [
-                "BASIC",
-                "FOUNDATION",
-                "MUST-INSTALL"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "traefik/traefik.yml"
-            },
-            "env": [
-                {
-                    "name": "domain",
-                    "label": "Top level domain",
-                    "default": "example.com"
-                },
-                {
-                    "name": "ACME_MAIL",
-                    "label": "Mail that should be used for ACME",
-                    "default": "user@example.com"
-                },
-                {
-                    "name": "network_name",
-                    "label": "on which network is this running?",
-                    "default": "overlay_public"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "1. Overlay",
-            "name": "overlay",
-            "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/traefik.png",
-            "description": "Adds an Overlay Network that all services that should be reachable through Traefik can connect to.",
-            "categories": [
-                "BASIC",
-                "FOUNDATION",
-                "MUST-INSTALL"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "overlay/overlay.yml"
-            },
-            "env": [
-                {
-                    "name": "network_name",
-                    "label": "Name of the main network",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "subnet",
-                    "label": "CIDR Subnet range",
-                    "default": "172.16.200.0/24"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "Cloudflare Tunnel",
-            "name": "cloudflared",
-            "logo": "https://cf-assets.www.cloudflare.com/slt3lc6tev37/7bIgGp4hk4SFO0o3SBbOKJ/b48185dcf20c579960afad879b25ea11/CF_logo_stacked_blktype.jpg",
-            "description": "Adds tunnel to Cloudflare in order to reach services from the internet. Alternative to bastion server with rathole.",
-            "note": "Overlay network and secret CLOUDFLARED_TOKEN_JSON must be deployed first!",
-            "categories": [
-                "BASIC",
-                "TUNNEL"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "cloudflared/cloudflared.yml"
-            },
-            "env": [
-                {
-                    "name": "network_name",
-                    "label": "Name of the main network",
-                    "default": "overlay_public"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "Adguard Home",
-            "name": "Adguard",
-            "logo": "https://upload.wikimedia.org/wikipedia/commons/4/48/AdGuard_Logo.png",
-            "description": "Local DNS",
-            "note": "Overlay network must be deployed first!",
-            "categories": [
-                "DNS"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "adguard/adguard.yml"
-            },
-            "env": [
-                {
-                    "name": "domain",
-                    "label": "Top level domain",
-                    "default": "example.com"
-                },
-                {
-                    "name": "network_name",
-                    "label": "on which network is this running?",
-                    "default": "overlay_public"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "3. DB (Postges)",
-            "name": "db",
-            "logo": "https://www.pgadmin.org/static/docs/pgadmin4-8.8-docs/_images/logo-right-128.png",
-            "description": "Basic db for your services (using Postgres)",
-            "categories": [
-                "BASIC",
-                "FOUNDATION",
-                "MUST-INSTALL",
-                "DB"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "db/db.yml"
-            },
-            "env": [
-                {
-                    "name": "subnet",
-                    "label": "Subnet IDv4 Range",
-                    "default": "172.16.13.0/24"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "4. Cache (Redis)",
-            "name": "redis",
-            "logo": "https://avatars.githubusercontent.com/u/1529926?s=280&v=4",
-            "description": "Basic cache for your services (using Redis)",
-            "categories": [
-                "BASIC",
-                "FOUNDATION",
-                "MUST-INSTALL"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "redis/redis.yml"
-            },
-            "env": [
-                {
-                    "name": "subnet",
-                    "label": "Subnet IDv4 Range",
-                    "default": "172.16.2.0/24"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "Portainer (in Swarm)",
-            "name": "portainer",
-            "logo": "https://www.portainer.io/hubfs/portainer-logo-white-stacked.svg",
-            "description": "Put Portainer onto the swarm for high availability and domain name access",
-            "categories": [
-                "Administration"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "portainer/portainer.yml"
-            },
-            "env": [
-                {
-                    "name": "domain",
-                    "label": "Top level domain",
-                    "default": "example.com"
-                },
-                {
-                    "name": "network_name",
-                    "label": "on which network is this running?",
-                    "default": "overlay_public"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "PGAdmin",
-            "name": "pgadmin",
-            "logo": "https://www.pgadmin.org/static/docs/pgadmin4-8.8-docs/_images/logo-right-128.png",
-            "description": "Administration Web Interface for PG_DBes",
-            "categories": [
-                "Administration",
-                "DB"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "pgadmin/pgadmin.yml"
-            },
-            "env": [
-                {
-                    "name": "domain",
-                    "label": "Top level domain",
-                    "default": "example.com"
-                },
-                {
-                    "name": "network_name",
-                    "label": "on which network is this running?",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "db_network_name",
-                    "label": "on which network is the DB running?",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "admin_mail",
-                    "label": "admin email",
-                    "default": "bob@example.com"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "Immich",
-            "name": "immich",
-            "logo": "https://immich.app/img/immich-logo-stacked-dark.svg",
-            "description": "Photo service. Brings its own DB (needs special settings).",
-            "categories": [
-                "Photos",
-                "Media",
-                "Organizing"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "immich/immich.yml"
-            },
-            "env": [
-                {
-                    "name": "domain",
-                    "label": "Top level domain",
-                    "default": "example.com"
-                },
-                {
-                    "name": "network_name",
-                    "label": "on which network is this running?",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "redis_network_name",
-                    "label": "on which network is the cache running?",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "home_folder",
-                    "label": "upload folder base location",
-                    "default": "/home/USER"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "Backup (Restic)",
-            "name": "backup",
-            "logo": "https://banner2.cleanpng.com/20180525/ips/kisspng-computer-icons-backup-database-5b07b4f5eb8ea9.7060211915272317339649.jpg",
-            "description": "Backup service. Using Restic and comes with GUI.",
-            "categories": [
-                "Backup"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "backrest/backrest.yml"
-            },
-            "env": [
-                {
-                    "name": "domain",
-                    "label": "Top level domain",
-                    "default": "example.com"
-                },
-                {
-                    "name": "network_name",
-                    "label": "on which network is this running?",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "home_folder",
-                    "label": "base folder containing the folders to back up",
-                    "default": "/home/USER"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "Rathole Tunnel",
-            "name": "rathole",
-            "logo": "https://raw.githubusercontent.com/rapiz1/rathole/main/docs/img/rathole-logo.png",
-            "description": "Adds tunnel client in order to reach services from another server. Alternative to cloudflare when using a bastion server with rathole server.",
-            "note": "Overlay network and secrets (RATHOLE_DEFAULT_TOKEN, RATHOLE_CONNECTION_PORT, RATHOLE_ADDRESS) and config (rathole_config_toml) must be deployed first!",
-            "categories": [
-                "TUNNEL"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "rathole/rathole.yml"
-            },
-            "env": [
-                {
-                    "name": "network_name",
-                    "label": "Name of the main network",
-                    "default": "overlay_public"
-                }
-            ]
-        },
-        {
-            "type": 2,
-            "title": "Jellyfin",
-            "name": "jellyfin",
-            "logo": "https://jellyfin.org/images/logo.svg",
-            "description": "Jellyfin Video Streaming server",
-            "note": "Overlay network must be deployed first!",
-            "categories": [
-                "Movies",
-                "Entertainment",
-                "Media"
-            ],
-            "platform": "linux",
-            "repository": {
-                "url": "https://github.com/bunhome/swarmConfig.git",
-                "stackfile": "jellyfin/jellyfin.yml"
-            },
-            "env": [
-                {
-                    "name": "network_name",
-                    "label": "Name of the main network",
-                    "default": "overlay_public"
-                },
-                {
-                    "name": "home_folder",
-                    "label": "base folder containing the media",
-                    "default": "/home/USER"
-                },
-                {
-                    "name": "AutoDiscover_HomeServer_Response",
-                    "label": "IP of Homeserver in private Network for Autodiscovery of Server/Client",
-                    "default": "111.111.111.111"
-                }
-            ]
+          "name": "network_name",
+          "label": "on which network is this running?",
+          "default": "overlay_public"
         }
-    ]
+      ]
+    },
+    {
+      "type": 2,
+      "title": "Paperless-ngx",
+      "name": "paperless",
+      "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/paperless.png",
+      "description": "",
+      "note": "traefik and overlay must be deployed first, needs redis container deployed, needs db container and a paperless user+password+db",
+      "categories": ["documents", "Media", "Organizing"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "paperless-ngx/paperless-ngx.yml"
+      },
+      "env": [
+        {
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
+        },
+        {
+          "name": "network_name",
+          "label": "on which network is this running?",
+          "default": "overlay_public"
+        },
+        {
+          "name": "redis_network_name",
+          "label": "on which network is redis running?",
+          "default": "overlay_public"
+        },
+        {
+          "name": "db_network_name",
+          "label": "on which network is ther DB running?",
+          "default": "overlay_public"
+        },
+        {
+          "name": "storage_size",
+          "label": "Size of Media storage",
+          "default": "20G"
+        },
+        {
+          "name": "db_service_name",
+          "label": "Name of the DB service to use",
+          "default": "db"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "5. Authelia",
+      "name": "authelia",
+      "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/authelia.png",
+      "description": "Adds the authelia middleware with sso",
+      "note": "Overlay Network and Traefik, Redis and DB must be deployed first. \n        Following Secrets must be defined  \n       - DOMAIN_NAME \n       - ADMIN_MAIL \n       - AUTHELIA_JWT_SECRET- should be super safe! \n       - AUTHELIA_SESSION_SECRET - should be super safe! \n       - AUTHELIA_STORAGE_POSTGRES_PASSWORD \n       - AUTHELIA_NOTIFIER_SMTP_PASSWORD - get from mail provider! \n       - AUTHELIA_STORAGE_ENCRYPTION_KEY \n       - AUTHELIA_OIDC_HMAC \n       - AUTHELIA_OIDC_JWKS_KEY \n       - AUTHELIA_OIDC_IMMICH_HASH \n       - AUTHELIA_OIDC_HOMARR_HASH \n       - AUTHELIA_OIDC_JELLYFIN_HASH \n       - AUTHELIA_OIDC_PAPERLESS_HASH \n       - AUTHELIA_OIDC_PORTAINER_HASH \n       - AUTHELIA_OIDC_SEAFILE_HASH \n        The following configs must be defined \n       - authelia_config from https://raw.githubusercontent.com/bunhome/swarmConfig/master/authelia/configuration.yml \n       - authelia_user - This is the user database as in the documentation",
+      "categories": ["BASIC", "FOUNDATION", "MUST-INSTALL"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "authelia/authelia.yml"
+      },
+      "env": [
+        {
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
+        },
+        {
+          "name": "network_name",
+          "label": "on which network is this running?",
+          "default": "overlay_public"
+        },
+        {
+          "name": "redis_network_name",
+          "label": "on which network is redis running?",
+          "default": "overlay_public"
+        },
+        {
+          "name": "db_network_name",
+          "label": "on which network is the DB running?",
+          "default": "overlay_public"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "2. Traefik",
+      "name": "traefik",
+      "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/traefik.png",
+      "description": "Adds traefik reverse proxy with dns challenge from cloudflare and authelia middleware",
+      "note": "Overlay network and secret CF_DNS_API_TOKEN must be deployed first!",
+      "categories": ["BASIC", "FOUNDATION", "MUST-INSTALL"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "traefik/traefik.yml"
+      },
+      "env": [
+        {
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
+        },
+        {
+          "name": "ACME_MAIL",
+          "label": "Mail that should be used for ACME",
+          "default": "user@example.com"
+        },
+        {
+          "name": "network_name",
+          "label": "on which network is this running?",
+          "default": "overlay_public"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "1. Overlay",
+      "name": "overlay",
+      "logo": "https://raw.githubusercontent.com/pi-hosted/pi-hosted/master/images/traefik.png",
+      "description": "Adds an Overlay Network that all services that should be reachable through Traefik can connect to.",
+      "categories": ["BASIC", "FOUNDATION", "MUST-INSTALL"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "overlay/overlay.yml"
+      },
+      "env": [
+        {
+          "name": "network_name",
+          "label": "Name of the main network",
+          "default": "overlay_public"
+        },
+        {
+          "name": "subnet",
+          "label": "CIDR Subnet range",
+          "default": "172.16.200.0/24"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "Cloudflare Tunnel",
+      "name": "cloudflared",
+      "logo": "https://cf-assets.www.cloudflare.com/slt3lc6tev37/7bIgGp4hk4SFO0o3SBbOKJ/b48185dcf20c579960afad879b25ea11/CF_logo_stacked_blktype.jpg",
+      "description": "Adds tunnel to Cloudflare in order to reach services from the internet. Alternative to bastion server with rathole.",
+      "note": "Overlay network and secret CLOUDFLARED_TOKEN_JSON must be deployed first!",
+      "categories": ["BASIC", "TUNNEL"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "cloudflared/cloudflared.yml"
+      },
+      "env": [
+        {
+          "name": "network_name",
+          "label": "Name of the main network",
+          "default": "overlay_public"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "Adguard Home",
+      "name": "Adguard",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/4/48/AdGuard_Logo.png",
+      "description": "Local DNS",
+      "note": "Overlay network must be deployed first!",
+      "categories": ["DNS"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "adguard/adguard.yml"
+      },
+      "env": [
+        {
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
+        },
+        {
+          "name": "network_name",
+          "label": "on which network is this running?",
+          "default": "overlay_public"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "3. DB (Postges)",
+      "name": "db",
+      "logo": "https://www.pgadmin.org/static/docs/pgadmin4-8.8-docs/_images/logo-right-128.png",
+      "description": "Basic db for your services (using Postgres)",
+      "categories": ["BASIC", "FOUNDATION", "MUST-INSTALL", "DB"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "db/db.yml"
+      },
+      "env": [
+        {
+          "name": "subnet",
+          "label": "Subnet IDv4 Range",
+          "default": "172.16.13.0/24"
+        },
+        {
+          "name": "storage_size",
+          "label": "Storage size for DB",
+          "default": "200GB"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "4. Cache (Redis)",
+      "name": "redis",
+      "logo": "https://avatars.githubusercontent.com/u/1529926?s=280&v=4",
+      "description": "Basic cache for your services (using Redis)",
+      "categories": ["BASIC", "FOUNDATION", "MUST-INSTALL"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "redis/redis.yml"
+      },
+      "env": [
+        {
+          "name": "subnet",
+          "label": "Subnet IDv4 Range",
+          "default": "172.16.2.0/24"
+        },
+        {
+          "name": "storage_size",
+          "label": "Size of Redis Storage",
+          "default": "20G"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "Portainer (in Swarm)",
+      "name": "portainer",
+      "logo": "https://www.portainer.io/hubfs/portainer-logo-white-stacked.svg",
+      "description": "Put Portainer onto the swarm for high availability and domain name access",
+      "categories": ["Administration"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "portainer/portainer.yml"
+      },
+      "env": [
+        {
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
+        },
+        {
+          "name": "network_name",
+          "label": "on which network is this running?",
+          "default": "overlay_public"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "PGAdmin",
+      "name": "pgadmin",
+      "logo": "https://www.pgadmin.org/static/docs/pgadmin4-8.8-docs/_images/logo-right-128.png",
+      "description": "Administration Web Interface for PG_DBes",
+      "categories": ["Administration", "DB"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "pgadmin/pgadmin.yml"
+      },
+      "env": [
+        {
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
+        },
+        {
+          "name": "network_name",
+          "label": "on which network is this running?",
+          "default": "overlay_public"
+        },
+        {
+          "name": "db_network_name",
+          "label": "on which network is the DB running?",
+          "default": "overlay_public"
+        },
+        {
+          "name": "admin_mail",
+          "label": "admin email",
+          "default": "bob@example.com"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "Immich",
+      "name": "immich",
+      "logo": "https://immich.app/img/immich-logo-stacked-dark.svg",
+      "description": "Photo service. Brings its own DB (needs special settings).",
+      "categories": ["Photos", "Media", "Organizing"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "immich/immich.yml"
+      },
+      "env": [
+        {
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
+        },
+        {
+          "name": "network_name",
+          "label": "on which network is this running?",
+          "default": "overlay_public"
+        },
+        {
+          "name": "redis_network_name",
+          "label": "on which network is the cache running?",
+          "default": "overlay_public"
+        },
+        {
+          "name": "picture_storage_size",
+          "label": "Size for upload folder",
+          "default": "3G"
+        },
+        {
+          "name": "cache_size",
+          "label": "upload folder base location",
+          "default": "/home/USER"
+        },
+        {
+          "name": "db_storage_size",
+          "label": "upload folder base location",
+          "default": "/home/USER"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "Backup (Restic)",
+      "name": "backup",
+      "logo": "https://banner2.cleanpng.com/20180525/ips/kisspng-computer-icons-backup-database-5b07b4f5eb8ea9.7060211915272317339649.jpg",
+      "description": "Backup service. Using Restic and comes with GUI.",
+      "categories": ["Backup"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "backrest/backrest.yml"
+      },
+      "env": [
+        {
+          "name": "domain",
+          "label": "Top level domain",
+          "default": "example.com"
+        },
+        {
+          "name": "network_name",
+          "label": "on which network is this running?",
+          "default": "overlay_public"
+        },
+        {
+          "name": "home_folder",
+          "label": "base folder containing the folders to back up",
+          "default": "/home/USER"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "Rathole Tunnel",
+      "name": "rathole",
+      "logo": "https://raw.githubusercontent.com/rapiz1/rathole/main/docs/img/rathole-logo.png",
+      "description": "Adds tunnel client in order to reach services from another server. Alternative to cloudflare when using a bastion server with rathole server.",
+      "note": "Overlay network and secrets (RATHOLE_DEFAULT_TOKEN, RATHOLE_CONNECTION_PORT, RATHOLE_ADDRESS) and config (rathole_config_toml) must be deployed first!",
+      "categories": ["TUNNEL"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "rathole/rathole.yml"
+      },
+      "env": [
+        {
+          "name": "network_name",
+          "label": "Name of the main network",
+          "default": "overlay_public"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "title": "Jellyfin",
+      "name": "jellyfin",
+      "logo": "https://jellyfin.org/images/logo.svg",
+      "description": "Jellyfin Video Streaming server",
+      "note": "Overlay network must be deployed first!",
+      "categories": ["Movies", "Entertainment", "Media"],
+      "platform": "linux",
+      "repository": {
+        "url": "https://github.com/bunhome/swarmConfig.git",
+        "stackfile": "jellyfin/jellyfin.yml"
+      },
+      "env": [
+        {
+          "name": "network_name",
+          "label": "Name of the main network",
+          "default": "overlay_public"
+        },
+        {
+          "name": "home_folder",
+          "label": "base folder containing the media",
+          "default": "/home/USER"
+        },
+        {
+          "name": "AutoDiscover_HomeServer_Response",
+          "label": "IP of Homeserver in private Network for Autodiscovery of Server/Client",
+          "default": "111.111.111.111"
+        }
+      ]
+    }
+  ]
 }

@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   redis:
@@ -14,7 +14,7 @@ services:
       - TZ=Europe/Berlin
     deploy:
       labels:
-         - "traefik.enable=false"
+        - "traefik.enable=false"
 
 networks:
   overlay:
@@ -27,3 +27,8 @@ networks:
 
 volumes:
   data:
+    driver: linstor
+    driver_opts:
+      size: "${storage_size}"
+      filesystem: "ext4"
+      storagepool: linstor_docker
