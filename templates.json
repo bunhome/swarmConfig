@@ -120,7 +120,7 @@
       "platform": "linux",
       "repository": {
         "url": "https://github.com/bunhome/swarmConfig.git",
-        "stackfile": "traefik/traefik.yml"
+        "stackfile": "traefik/traefikv3.yml"
       },
       "env": [
         {
