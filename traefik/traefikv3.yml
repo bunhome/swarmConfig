@@ -8,7 +8,6 @@ volumes:
     driver: linstor
     driver_opts:
       size: "200M"
-      filesystem: "ext4"
       storagepool: linstor_docker
 
 networks:
